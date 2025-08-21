@@ -117,7 +117,7 @@ function AttendanceMultiSelect() {
                       }}
                     />
                     <label className="form-check-label" htmlFor={`student-${student.id}`}>
-                      {student.Name}
+                      {student.name}
                     </label>
                   </div>
                 ))}
