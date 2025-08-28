@@ -10,6 +10,7 @@ import AttendanceMultiSelect from './AttendanceMultiSelect';
 import AttendanceGrid from './AttendanceGrid';
 import AttendanceCardView from './AttendanceCardView';
 import Dashboard from './Dashboard';
+import TestSystem from './TestSystem';
 
 // Define routes
 const router = createBrowserRouter([
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
       { path: '/attendance-multi-select', element: <AttendanceMultiSelect /> },
       { path: '/attendance-grid', element: <AttendanceGrid /> },
       { path: '/attendance-card-view', element: <AttendanceCardView /> },
+      {
+  path: '/test-system',
+  element: <TestSystem />
+}   
     ],
   },
 ]);
