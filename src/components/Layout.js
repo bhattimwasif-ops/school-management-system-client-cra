@@ -53,7 +53,7 @@ function Layout() {
         onClick={handleToggle}
         style={{ position: 'fixed', zIndex: 1000, borderRadius: '50%', width: '40px', height: '40px', padding: 0, border: 'none' }}
       >
-        <span className="navbar-toggler-icon" style={{ color: isSidebarOpen ? '#fff' : '#ccc' }}></span>
+        <span className="navbar-toggler-icon" style={{ color: isSidebarOpen ? '#0e0d0dff' : '#ccc' }}></span>
       </button>
 
       {/* Sidebar */}
@@ -73,7 +73,7 @@ function Layout() {
         }}
       >
         <div className="p-3 border-bottom border-secondary">
-          <h4 className="mb-0 text-white">School Hub</h4>
+          <h4 className="mb-0 text-white">Hub</h4>
         </div>
         <div className="list-group list-group-flush">
           {menuItems.map((route) => (
@@ -82,9 +82,7 @@ function Layout() {
               to={route.path}
               className={`list-group-item list-group-item-action ${location.pathname === route.path ? 'active' : ''}`}
               aria-current={location.pathname === route.path ? 'page' : undefined}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = '#333')}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = location.pathname === route.path ? '#007bff' : '#222')}
-              style={{ color: '#fff', transition: 'background-color 0.2s ease' }}
+              style={{ color: '#100101ff' }} // Remove transition and hover handlers
             >
               {route.path
                 .split('-')
