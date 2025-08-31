@@ -1,16 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client'; // Changed from react-dom to react-dom/client
 import './index.css';
 import App from './App';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure this line
-import { RouterProvider } from 'react-router-dom';
-import { router } from './components/Layout';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
   <React.StrictMode>
-    <RouterProvider router={router}>
-      <App />
-    </RouterProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+    <App />
+  </React.StrictMode>
 );

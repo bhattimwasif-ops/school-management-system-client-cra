@@ -11,6 +11,10 @@ import AttendanceGrid from './AttendanceGrid';
 import AttendanceCardView from './AttendanceCardView';
 import Dashboard from './Dashboard';
 import TestSystem from './TestSystem';
+import TestDefinition from './TestDefinition';
+import StudentReport from './StudentReport';
+import EditMarks from './EditMarks';
+
 
 // Define routes
 const router = createBrowserRouter([
@@ -30,9 +34,21 @@ const router = createBrowserRouter([
       { path: '/attendance-grid', element: <AttendanceGrid /> },
       { path: '/attendance-card-view', element: <AttendanceCardView /> },
       {
-  path: '/test-system',
-  element: <TestSystem />
-}   
+        path: '/test-system',
+        element: <TestSystem />
+      },
+      {
+        path: '/test-definition',
+        element: <TestDefinition />
+      },
+      {
+        path: '/student-report',
+        element: <StudentReport />
+      } ,
+      {
+        path: '/edit-marks',
+        element: <EditMarks />
+      } 
     ],
   },
 ]);

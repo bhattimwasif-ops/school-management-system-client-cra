@@ -5,15 +5,16 @@ import { useNavigate } from 'react-router-dom';
 const BASE_URL = 'https://localhost:7014';
 
 function Login() {
-  const [username, setUsername] = useState('');
+  const [email, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${BASE_URL}/api/auth/login`, { username, password });
+      debugger
+
+      const response = await axios.post(`${BASE_URL}/api/auth/login`, { email, password });
       localStorage.setItem('token', response.data.token);
       navigate('/attendance');
     } catch (err) {
@@ -28,12 +29,12 @@ function Login() {
         {error && <div className="alert alert-danger" role="alert">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">Username</label>
+            <label htmlFor="email" className="form-label">Username</label>
             <input
               type="text"
               className="form-control bg-dark text-white"
               id="username"
-              value={username}
+              value={email}
               onChange={(e) => setUsername(e.target.value)}
               required
             />
