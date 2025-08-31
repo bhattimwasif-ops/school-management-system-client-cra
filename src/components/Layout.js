@@ -14,7 +14,7 @@ import TestSystem from './TestSystem';
 import TestDefinition from './TestDefinition';
 import StudentReport from './StudentReport';
 import EditMarks from './EditMarks';
-
+import GlobalTestReport from './GlobalTestReport';
 
 // Define routes
 const router = createBrowserRouter([
@@ -33,37 +33,57 @@ const router = createBrowserRouter([
       { path: '/attendance-multi-select', element: <AttendanceMultiSelect /> },
       { path: '/attendance-grid', element: <AttendanceGrid /> },
       { path: '/attendance-card-view', element: <AttendanceCardView /> },
-      {
-        path: '/test-system',
-        element: <TestSystem />
-      },
-      {
-        path: '/test-definition',
-        element: <TestDefinition />
-      },
-      {
-        path: '/student-report',
-        element: <StudentReport />
-      } ,
-      {
-        path: '/edit-marks',
-        element: <EditMarks />
-      } 
+      { path: '/test-system', element: <TestSystem /> },
+      { path: '/test-definition', element: <TestDefinition /> },
+      { path: '/student-report', element: <StudentReport /> },
+      { path: '/edit-marks-report', element: <EditMarks /> }, // Assuming EditMarks handles both editing and reports
+      { path: '/global-test-report', element: <GlobalTestReport /> },
     ],
   },
 ]);
 
 function Layout() {
   const location = useLocation();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Start collapsed on mobile
-  const menuItems = router.routes
-    .flatMap(route => route.children || [])
-    .filter(route => route.path !== '/'); // Exclude root redirect
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleToggle = () => {
-    console.log('Toggle clicked'); // Debug log
+    console.log('Toggle clicked');
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  // Hierarchical menu structure
+  const menuItems = [
+    { path: '/dashboard', label: 'Dashboard', isParent: false },
+    {
+      label: 'Student Management System',
+      isParent: true,
+      children: [
+        { path: '/class-registration', label: 'Class Setup' },
+        { path: '/student-registration', label: 'Student Enrollment' },
+      ],
+    },
+    {
+      label: 'Attendance Management System (AMS)',
+      isParent: true,
+      children: [
+        { path: '/attendance', label: 'Attendance Log' },
+        { path: '/attendance-multi-select', label: 'Attendance Multi-Select' },
+        { path: '/attendance-grid', label: 'Attendance Grid View' },
+        { path: '/attendance-card-view', label: 'Attendance Card View' },
+      ],
+    },
+    {
+      label: 'Exam & Test Management System',
+      isParent: true,
+      children: [
+        { path: '/test-definition', label: 'Exam/Test Configuration' },
+        { path: '/test-system', label: 'Add Marks' }, // Assuming TestSystem handles adding marks
+        { path: '/edit-marks-report', label: 'Edit Marks & Reports' },
+        { path: '/student-report', label: 'Test Performance Report' }, // Assuming StudentReport shows test performance
+        { path: '/global-test-report', label: 'Global Test Report' },
+      ],
+    },
+  ];
 
   return (
     <div className="d-flex" style={{ minHeight: '100vh', backgroundColor: '#1a1a1a' }}>
@@ -97,21 +117,51 @@ function Layout() {
           <h4 className="mb-0 text-white">Hub</h4>
         </div>
         <div className="list-group list-group-flush">
-          {menuItems.map((route) => (
-            <Link
-              key={route.path}
-              to={route.path}
-              className={`list-group-item list-group-item-action ${location.pathname === route.path ? 'active' : ''}`}
-              aria-current={location.pathname === route.path ? 'page' : undefined}
-              style={{ color: '#100101ff' }} // Remove transition and hover handlers
-            >
-              {route.path
-                .split('-')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ')
-                .replace('/', '') || 'Home'}
-            </Link>
-          ))}
+          {menuItems.map((item) =>
+            item.isParent ? (
+              <div key={item.label}>
+                <div
+                  className={`list-group-item list-group-item-action ${location.pathname.includes(item.children.find(c => location.pathname.includes(c.path))?.path) ? 'active' : ''}`}
+                  style={{ cursor: 'pointer', color: '#fff', backgroundColor: '#333' }}
+                  onClick={(e) => {
+                    const submenu = e.currentTarget.nextElementSibling;
+                    submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+                  }}
+                >
+                  {item.label}
+                </div>
+                <ul
+                  className="list-group list-group-flush submenu"
+                  style={{ display: 'none', backgroundColor: '#2a2a2a' }}
+                >
+                  {item.children.map((child) => (
+                    <li key={child.path}>
+                      <Link
+                        to={child.path}
+                        className={`list-group-item list-group-item-action ${location.pathname === child.path ? 'active' : ''}`}
+                        aria-current={location.pathname === child.path ? 'page' : undefined}
+                        style={{ color: '#ccc' }}
+                        onClick={() => setIsSidebarOpen(false)}
+                      >
+                        {child.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`list-group-item list-group-item-action ${location.pathname === item.path ? 'active' : ''}`}
+                aria-current={location.pathname === item.path ? 'page' : undefined}
+                style={{ color: '#fff' }}
+                onClick={() => setIsSidebarOpen(false)}
+              >
+                {item.label}
+              </Link>
+            )
+          )}
         </div>
       </nav>
 

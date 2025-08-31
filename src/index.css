@@ -25,3 +25,6 @@ code {
     width: 100% !important;
   }
 }
+.select__control {
+  margin-bottom: 10px;
+}

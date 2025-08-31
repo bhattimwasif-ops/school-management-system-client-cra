@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import EditMarks from './EditMarks';
 import Modal from 'react-bootstrap/Modal';
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Bar, Pie, Line } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import Select from 'react-select';
 
 // Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend);
 
 function StudentReport() {
   const [students, setStudents] = useState([]);
@@ -17,12 +18,13 @@ function StudentReport() {
   const [error, setError] = useState('');
   const [showEdit, setShowEdit] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
-  const [filterTest, setFilterTest] = useState('');
   const [filterSubject, setFilterSubject] = useState('');
   const [filterDate, setFilterDate] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteReportId, setDeleteReportId] = useState(null);
+  const [selectedTests, setSelectedTests] = useState([]);
   const chartRef = useRef(null);
+  const [chartType, setChartType] = useState('bar'); // Options: 'bar', 'pie', 'line'
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -53,7 +55,7 @@ function StudentReport() {
         headers: { Authorization: `Bearer ${token}` },
       });
       let filtered = response.data;
-      if (filterTest) filtered = filtered.filter(r => r.testName.toLowerCase().includes(filterTest.toLowerCase()));
+      if (selectedTests.length > 0) filtered = filtered.filter(r => selectedTests.some(t => t.value === r.testName));
       if (filterSubject) filtered = filtered.filter(r => r.subject.toLowerCase().includes(filterSubject.toLowerCase()));
       if (filterDate) filtered = filtered.filter(r => new Date(r.updatedAt).toISOString().split('T')[0] === filterDate);
       setReports(filtered);
@@ -116,7 +118,9 @@ function StudentReport() {
                       averagePercentage >= 60 ? "C" :
                       averagePercentage >= 50 ? "D" : "F";
 
-  const chartData = {
+  const uniqueTests = [...new Set(reports.map(r => r.testName))].map(test => ({ value: test, label: test }));
+
+  const barChartData = {
     labels: reports.map(r => r.subject),
     datasets: [{
       label: 'Obtained Marks',
@@ -127,7 +131,27 @@ function StudentReport() {
     }],
   };
 
-  // Destroy previous chart instance if it exists
+  const pieChartData = {
+    labels: reports.map(r => r.subject),
+    datasets: [{
+      data: reports.map(r => r.obtainedMarks),
+      backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'],
+      borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'],
+      borderWidth: 1,
+    }],
+  };
+
+  const lineChartData = {
+    labels: reports.map(r => new Date(r.updatedAt).toLocaleDateString()),
+    datasets: [{
+      label: 'Obtained Marks',
+      data: reports.map(r => r.obtainedMarks),
+      fill: false,
+      borderColor: 'rgb(75, 192, 192)',
+      tension: 0.1,
+    }],
+  };
+
   useEffect(() => {
     return () => {
       if (chartRef.current) {
@@ -162,12 +186,16 @@ function StudentReport() {
           {selectedStudentId && (
             <>
               <div className="mb-3">
-                <input
-                  type="text"
-                  className="form-control mb-2"
-                  placeholder="Filter by Test"
-                  value={filterTest}
-                  onChange={(e) => { setFilterTest(e.target.value); fetchReports(); }}
+                <label htmlFor="testFilter" className="form-label">Filter by Test</label>
+                <Select
+                  id="testFilter"
+                  isMulti
+                  options={uniqueTests}
+                  value={selectedTests}
+                  onChange={setSelectedTests}
+                  onBlur={() => fetchReports()}
+                  className="basic-multi-select"
+                  classNamePrefix="select"
                 />
                 <input
                   type="text"
@@ -185,7 +213,18 @@ function StudentReport() {
               </div>
               <div className="mb-3">
                 <h4>Performance Dashboard</h4>
-                <Bar data={chartData} ref={chartRef} />
+                <select
+                  className="form-select mb-2"
+                  value={chartType}
+                  onChange={(e) => setChartType(e.target.value)}
+                >
+                  <option value="bar">Bar Chart</option>
+                  <option value="pie">Pie Chart</option>
+                  <option value="line">Line Chart</option>
+                </select>
+                {chartType === 'bar' && <Bar data={barChartData} ref={chartRef} />}
+                {chartType === 'pie' && <Pie data={pieChartData} ref={chartRef} />}
+                {chartType === 'line' && <Line data={lineChartData} ref={chartRef} />}
               </div>
               <div className="mb-3 p-3 bg-light border rounded">
                 <h5>Overall Result</h5>
@@ -207,7 +246,7 @@ function StudentReport() {
                       <th>Obtained Marks</th>
                       <th>Percentage</th>
                       <th>Grade</th>
-                      <th>Updated At</th>
+                      {/* <th>Updated At</th> */}
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -220,7 +259,7 @@ function StudentReport() {
                         <td>{report.obtainedMarks}</td>
                         <td>{report.percentage}</td>
                         <td>{report.grade}</td>
-                        <td>{new Date(report.updatedAt).toLocaleString()}</td>
+                        {/* <td>{new Date(report.updatedAt).toLocaleString()}</td> */}
                         <td>
                           <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(report)}>Edit</button>
                           <button className="btn btn-danger btn-sm" onClick={() => handleDelete(report.id)}>Delete</button>
