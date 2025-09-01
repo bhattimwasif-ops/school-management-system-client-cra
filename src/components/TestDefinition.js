@@ -31,7 +31,7 @@ function TestDefinition() {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      await axios.post('https://localhost:5001/api/test/create', {
+      await axios.post('https://localhost:7014/api/test/create', {
         ClassId: classId,
         Session: session,
         Type: type,

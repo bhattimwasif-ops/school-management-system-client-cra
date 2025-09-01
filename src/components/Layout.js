@@ -15,6 +15,7 @@ import TestDefinition from './TestDefinition';
 import StudentReport from './StudentReport';
 import EditMarks from './EditMarks';
 import GlobalTestReport from './GlobalTestReport';
+// import SearchMarks from './SearchMarks';
 
 // Define routes
 const router = createBrowserRouter([
@@ -36,8 +37,10 @@ const router = createBrowserRouter([
       { path: '/test-system', element: <TestSystem /> },
       { path: '/test-definition', element: <TestDefinition /> },
       { path: '/student-report', element: <StudentReport /> },
-      { path: '/edit-marks-report', element: <EditMarks /> }, // Assuming EditMarks handles both editing and reports
+      // { path: '/edit-marks-report', element: <EditMarks /> }, // Assuming EditMarks handles both editing and reports
       { path: '/global-test-report', element: <GlobalTestReport /> },
+      // { path: '/search-marks', element: <SearchMarks /> }
+
     ],
   },
 ]);
@@ -78,7 +81,8 @@ function Layout() {
       children: [
         { path: '/test-definition', label: 'Exam/Test Configuration' },
         { path: '/test-system', label: 'Add Marks' }, // Assuming TestSystem handles adding marks
-        { path: '/edit-marks-report', label: 'Edit Marks & Reports' },
+        // { path: '/edit-marks-report', label: 'Edit Marks & Reports' },
+        // { path: '/search-marks', label: 'SearchMark' },
         { path: '/student-report', label: 'Test Performance Report' }, // Assuming StudentReport shows test performance
         { path: '/global-test-report', label: 'Global Test Report' },
       ],

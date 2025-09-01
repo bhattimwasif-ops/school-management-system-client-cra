@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import html2canvas from 'html2canvas'; // Added import
+import jsPDF from 'jspdf'; // Added import
 
 function ClassTestStudentReport() {
   const [classes, setClasses] = useState([]);
@@ -74,6 +76,10 @@ function ClassTestStudentReport() {
 
   const exportPDF = async () => {
     const input = document.getElementById('result-table');
+    if (!input) {
+      console.error('Element with id "result-table" not found.');
+      return;
+    }
     const canvas = await html2canvas(input);
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF();
