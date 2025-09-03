@@ -75,33 +75,42 @@ function TestSystem() {
   }, [selectedStudentId, studentTests.length, selectedTestId]);
 
   const handleMarksSubmit = async (e) => {
-    e.preventDefault();
-    if (!selectedStudentId || studentTests.length === 0) {
-      setError('Please select a student and enter marks.');
-      return;
+  e.preventDefault();
+  if (!selectedStudentId || studentTests.length === 0) {
+    setError('Please select a student and enter marks.');
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem('token');
+    const testId = selectedTestId;
+    const payload = studentTests.map(st => ({
+      StudentId: selectedStudentId,
+      TestId: testId,
+      Subject: st.Subject,
+      TotalMarks: st.TotalMarks,
+      ObtainedMarks: st.ObtainedMarks,
+    }));
+
+    const response = await axios.post(`${BASE_URL}/api/test/add-marks`, payload, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const skipped = response.data?.skippedSubjects || [];
+    debugger
+    if (skipped.length > 0) {
+      setSuccess(`Marks saved. But these subjects were already added: ${skipped.join(', ')}`);
+    } else {
+      setSuccess('Marks saved successfully!');
     }
 
-    try {
-      const token = localStorage.getItem('token');
-      const testId = selectedTestId;
-      const payload = studentTests.map(st => ({
-        StudentId: selectedStudentId,
-        TestId: testId,
-        Subject: st.Subject,
-        TotalMarks: st.TotalMarks,
-        ObtainedMarks: st.ObtainedMarks,
-      }));
-      await axios.post(`${BASE_URL}/api/test/add-marks`, payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setSuccess('Marks saved successfully!');
-      setError('');
-      setStudentTests([]);
-    } catch (err) {
-      setError('Error saving marks.');
-      setSuccess('');
-    }
-  };
+    setError('');
+    setStudentTests([]);
+  } catch (err) {
+    setError('Error saving marks.');
+    setSuccess('');
+  }
+};
 
   const addTestEntry = () => {
     setStudentTests([...studentTests, { Subject: '', TotalMarks: 30, ObtainedMarks: 0, TestId: selectedTestId }]);
@@ -189,6 +198,7 @@ function TestSystem() {
                   <div className="col-12 col-md-4">
                     <input
                       type="text"
+                      disabled
                       className="form-control"
                       value={st.Subject}
                       onChange={(e) => updateTestEntry(index, 'Subject', e.target.value)}

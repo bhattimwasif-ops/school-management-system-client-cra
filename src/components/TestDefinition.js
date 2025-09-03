@@ -51,7 +51,7 @@ function TestDefinition() {
     <div className="d-flex flex-column min-vh-100 bg-light">
       <div className="container py-3">
         <div className="card p-3 p-md-4">
-          <h2 className="card-title text-center mb-4">Define Test</h2>
+          <h2 className="card-title text-center mb-4">Create Test/Exam</h2>
           {error && <p className="text-danger text-center mb-3">{error}</p>}
           {success && <p className="text-success text-center mb-3">{success}</p>}
           <form onSubmit={handleSubmit}>

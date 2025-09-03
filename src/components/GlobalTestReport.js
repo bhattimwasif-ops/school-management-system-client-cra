@@ -66,6 +66,7 @@ function ClassTestStudentReport() {
         params: { testId: selectedTestId, studentId: allStudents ? null : selectedStudentId },
         headers: { Authorization: `Bearer ${token}` },
       });
+      debugger
       setResults(response.data);
       const avg = response.data.reduce((sum, r) => sum + r.percentage, 0) / response.data.length;
       setClassAverage(avg.toFixed(2));

@@ -15,6 +15,11 @@ import TestDefinition from './TestDefinition';
 import StudentReport from './StudentReport';
 import EditMarks from './EditMarks';
 import GlobalTestReport from './GlobalTestReport';
+import StudentReportGenerator from './StudentReportGenerator';
+import ClassAttendanceReport from './ClassAttendanceReport';
+import StudentForm from './StudentForm';
+import StudentList from './StudentList';
+import StudentDashboard from './StudentDashboard';
 // import SearchMarks from './SearchMarks';
 
 // Define routes
@@ -28,7 +33,12 @@ const router = createBrowserRouter([
     element: <ProtectedRoute><Layout /></ProtectedRoute>,
     children: [
       { path: '/dashboard', element: <Dashboard /> },
-      { path: '/attendance', element: <Attendance /> },
+      // { path: '/attendance', element: <Attendance /> },
+      { path: '/student-form', element: <StudentForm /> },
+      { path: '/student-list', element: <StudentList /> },
+      { path: '/student-dashboard', element: <StudentDashboard /> },
+
+
       { path: '/class-registration', element: <ClassRegistration /> },
       { path: '/student-registration', element: <StudentRegistration /> },
       { path: '/attendance-multi-select', element: <AttendanceMultiSelect /> },
@@ -39,7 +49,9 @@ const router = createBrowserRouter([
       { path: '/student-report', element: <StudentReport /> },
       // { path: '/edit-marks-report', element: <EditMarks /> }, // Assuming EditMarks handles both editing and reports
       { path: '/global-test-report', element: <GlobalTestReport /> },
-      // { path: '/search-marks', element: <SearchMarks /> }
+      { path: '/student-report-generator', element: <StudentReportGenerator /> },
+      { path: '/class-attendance-report', element: <ClassAttendanceReport /> }
+
 
     ],
   },
@@ -63,15 +75,21 @@ function Layout() {
       children: [
         { path: '/class-registration', label: 'Class Setup' },
         { path: '/student-registration', label: 'Student Enrollment' },
+        // { path: '/student-form', label: 'Student Form' },
+        { path: '/student-Dashboard', label: 'Student Dashboard' },
+
+        // { path: '/student-list', label: 'Student List' },
+
       ],
     },
     {
       label: 'Attendance Management System (AMS)',
       isParent: true,
       children: [
-        { path: '/attendance', label: 'Attendance Log' },
+        // { path: '/attendance', label: 'Attendance Log' },
         { path: '/attendance-multi-select', label: 'Attendance Multi-Select' },
         { path: '/attendance-grid', label: 'Attendance Grid View' },
+        { path: '/class-attendance-report', label: 'Attendance Report' },
         { path: '/attendance-card-view', label: 'Attendance Card View' },
       ],
     },
@@ -84,7 +102,8 @@ function Layout() {
         // { path: '/edit-marks-report', label: 'Edit Marks & Reports' },
         // { path: '/search-marks', label: 'SearchMark' },
         { path: '/student-report', label: 'Test Performance Report' }, // Assuming StudentReport shows test performance
-        { path: '/global-test-report', label: 'Global Test Report' },
+        // { path: '/global-test-report', label: 'Global Test Report' },
+        // {path:'/student-report-generator', label: 'Student Result Card'}
       ],
     },
   ];

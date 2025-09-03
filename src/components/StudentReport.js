@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import EditMarks from './EditMarks';
 import Modal from 'react-bootstrap/Modal';
@@ -23,7 +23,6 @@ function StudentReport() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteReportId, setDeleteReportId] = useState(null);
   const [selectedTests, setSelectedTests] = useState([]);
-  const chartRef = useRef(null);
   const [chartType, setChartType] = useState('bar'); // Options: 'bar', 'pie', 'line'
 
   useEffect(() => {
@@ -46,7 +45,7 @@ function StudentReport() {
     if (selectedStudentId) {
       fetchReports();
     }
-  }, [selectedStudentId]);
+  }, [selectedStudentId, selectedTests, filterSubject, filterDate]);
 
   const fetchReports = async () => {
     try {
@@ -98,6 +97,10 @@ function StudentReport() {
 
   const exportPDF = () => {
     const input = document.getElementById('report-table');
+    if (!input) {
+      console.error('Report table element not found.');
+      return;
+    }
     html2canvas(input).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF();
@@ -152,13 +155,14 @@ function StudentReport() {
     }],
   };
 
-  useEffect(() => {
-    return () => {
-      if (chartRef.current) {
-        chartRef.current.destroy();
-      }
-    };
-  }, [selectedStudentId]);
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top' },
+      title: { display: true, text: 'Student Performance' },
+    },
+  };
 
   return (
     <div className="d-flex flex-column min-vh-100 bg-light">
@@ -199,7 +203,7 @@ function StudentReport() {
                 />
                 <input
                   type="text"
-                  className="form-control mb-2"
+                  className="form-control mb-2 mt-2"
                   placeholder="Filter by Subject"
                   value={filterSubject}
                   onChange={(e) => { setFilterSubject(e.target.value); fetchReports(); }}
@@ -211,20 +215,27 @@ function StudentReport() {
                   onChange={(e) => { setFilterDate(e.target.value); fetchReports(); }}
                 />
               </div>
-              <div className="mb-3">
+              <div className="mb-3" style={{ height: '400px', position: 'relative' }}>
                 <h4>Performance Dashboard</h4>
                 <select
                   className="form-select mb-2"
                   value={chartType}
                   onChange={(e) => setChartType(e.target.value)}
+                  style={{ maxWidth: '200px' }}
                 >
                   <option value="bar">Bar Chart</option>
                   <option value="pie">Pie Chart</option>
                   <option value="line">Line Chart</option>
                 </select>
-                {chartType === 'bar' && <Bar data={barChartData} ref={chartRef} />}
-                {chartType === 'pie' && <Pie data={pieChartData} ref={chartRef} />}
-                {chartType === 'line' && <Line data={lineChartData} ref={chartRef} />}
+                <div style={{ height: '90%', width: '100%', position: 'relative' }}>
+                  {reports.length > 0 && (
+                    <>
+                      {chartType === 'bar' && <Bar data={barChartData} options={chartOptions} />}
+                      {chartType === 'pie' && <Pie data={pieChartData} options={chartOptions} />}
+                      {chartType === 'line' && <Line data={lineChartData} options={chartOptions} />}
+                    </>
+                  )}
+                </div>
               </div>
               <div className="mb-3 p-3 bg-light border rounded">
                 <h5>Overall Result</h5>
@@ -246,7 +257,6 @@ function StudentReport() {
                       <th>Obtained Marks</th>
                       <th>Percentage</th>
                       <th>Grade</th>
-                      {/* <th>Updated At</th> */}
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -259,7 +269,6 @@ function StudentReport() {
                         <td>{report.obtainedMarks}</td>
                         <td>{report.percentage}</td>
                         <td>{report.grade}</td>
-                        {/* <td>{new Date(report.updatedAt).toLocaleString()}</td> */}
                         <td>
                           <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(report)}>Edit</button>
                           <button className="btn btn-danger btn-sm" onClick={() => handleDelete(report.id)}>Delete</button>
