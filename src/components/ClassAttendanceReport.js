@@ -34,25 +34,40 @@ function ClassAttendanceReport() {
     fetchClasses();
   }, []);
 
-  useEffect(() => {
-    if (selectedClassId && fromDate && toDate) {
-      const fetchAttendance = async () => {
-        try {
-          const token = localStorage.getItem('token');
-          const response = await axios.get(`https://localhost:7014/api/attendance/class/${selectedClassId}`, {
-            params: { fromDate, toDate },
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setAttendanceData(response.data.attendance);
-          setTotals(response.data.totals);
-          setAbsentStudents(response.data.absentStudents);
-        } catch (err) {
-          setError('Error fetching attendance data.');
-        }
-      };
-      fetchAttendance();
+  const handleSearch = async () => {
+    if (!selectedClassId || !fromDate || !toDate) {
+      setError('Please select a class and provide both from and to dates.');
+      return;
     }
-  }, [selectedClassId, fromDate, toDate]);
+
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+    if (from > to) {
+      setError('From date cannot be later than to date.');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`https://localhost:7014/api/attendance/class/${selectedClassId}`, {
+        params: { fromDate: fromDate, toDate: toDate },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      debugger
+      setAttendanceData(response.data.attendance || []);
+      setTotals(response.data.totals || { Present: 0, Absent: 0, Late: 0 });
+      if(fromDate == toDate){
+      setAbsentStudents(response.data.absentStudents || []);
+      }
+      setError('');
+    } catch (err) {
+      debugger
+      setError('Error fetching attendance data.');
+      setAttendanceData([]);
+      setTotals({ Present: 0, Absent: 0, Late: 0 });
+      setAbsentStudents([]);
+    }
+  };
 
   const exportPDF = async () => {
     const input = reportRef.current;
@@ -111,8 +126,11 @@ function ClassAttendanceReport() {
               <input type="date" className="form-control" id="toDate" value={toDate} onChange={(e) => setToDate(e.target.value)} required />
             </div>
           </div>
+          <div className="mb-3">
+            <button className="btn btn-primary w-100" onClick={handleSearch}>Search</button>
+          </div>
           <div className="d-flex justify-content-center mb-3">
-            <Pie data={pieData} style={{ maxWidth: '300px',maxHeight:'300px' }} />
+            <Pie data={pieData} style={{ maxWidth: '300px', maxHeight:'300px' }} />
           </div>
           <div className="row mb-3 text-center">
             <div className="col-12 col-md-4 mb-2">

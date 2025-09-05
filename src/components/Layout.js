@@ -20,6 +20,7 @@ import ClassAttendanceReport from './ClassAttendanceReport';
 import StudentForm from './StudentForm';
 import StudentList from './StudentList';
 import StudentDashboard from './StudentDashboard';
+import StudentAttendanceDetail from './StudentAttendanceDetail';
 // import SearchMarks from './SearchMarks';
 
 // Define routes
@@ -37,6 +38,8 @@ const router = createBrowserRouter([
       { path: '/student-form', element: <StudentForm /> },
       { path: '/student-list', element: <StudentList /> },
       { path: '/student-dashboard', element: <StudentDashboard /> },
+      { path: '/student-attendance-detail', element: <StudentAttendanceDetail /> },
+
 
 
       { path: '/class-registration', element: <ClassRegistration /> },
@@ -89,8 +92,10 @@ function Layout() {
         // { path: '/attendance', label: 'Attendance Log' },
         { path: '/attendance-multi-select', label: 'Attendance Multi-Select' },
         { path: '/attendance-grid', label: 'Attendance Grid View' },
-        { path: '/class-attendance-report', label: 'Attendance Report' },
         { path: '/attendance-card-view', label: 'Attendance Card View' },
+        { path: '/class-attendance-report', label: 'Attendance Report' },
+        { path: '/student-attendance-detail', label: 'Student Attendance Report' },
+
       ],
     },
     {

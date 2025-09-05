@@ -31,7 +31,9 @@ const allFields = [
   { label: 'Mother Name', name: 'motherName', type: 'text', required: false },
   { label: 'Guardian Name', name: 'guardianName', type: 'text', required: false },
   { label: 'Guardian Occupation', name: 'guardianOccupation', type: 'text', required: false },
-  { label: 'Admission Date', name: 'admissionDate', type: 'date', required: false }
+  { label: 'Admission Date', name: 'admissionDate', type: 'date', required: false },
+  { label: 'DOB', name: 'DOB', type: 'date', required: false }
+
 ];
 
 function StudentForm({ selectedStudent, onSave, onError, onCancel }) {

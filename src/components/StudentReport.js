@@ -12,6 +12,8 @@ import Select from 'react-select';
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend);
 
 function StudentReport() {
+  const [classes, setClasses] = useState([]);
+  const [selectedClassId, setSelectedClassId] = useState('');
   const [students, setStudents] = useState([]);
   const [selectedStudentId, setSelectedStudentId] = useState('');
   const [reports, setReports] = useState([]);
@@ -26,20 +28,42 @@ function StudentReport() {
   const [chartType, setChartType] = useState('bar'); // Options: 'bar', 'pie', 'line'
 
   useEffect(() => {
-    const fetchStudents = async () => {
+    const fetchClasses = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('https://localhost:7014/api/students', {
+        const response = await axios.get('https://localhost:7014/api/classes', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setStudents(response.data);
+        setClasses(response.data);
       } catch (err) {
-        setError('Error fetching students.');
+        setError('Error fetching classes.');
         console.error(err);
       }
     };
-    fetchStudents();
+    fetchClasses();
   }, []);
+
+  useEffect(() => {
+    if (selectedClassId) {
+      const fetchStudents = async () => {
+        try {
+          const token = localStorage.getItem('token');
+          const response = await axios.get(`https://localhost:7014/api/students/${selectedClassId}/students`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setStudents(response.data);
+          setSelectedStudentId(''); // Reset selected student when class changes
+        } catch (err) {
+          setError('Error fetching students.');
+          console.error(err);
+        }
+      };
+      fetchStudents();
+    } else {
+      setStudents([]);
+      setSelectedStudentId('');
+    }
+  }, [selectedClassId]);
 
   useEffect(() => {
     if (selectedStudentId) {
@@ -121,8 +145,7 @@ function StudentReport() {
                       averagePercentage >= 60 ? "C" :
                       averagePercentage >= 50 ? "D" : "F";
 
-  const uniqueTests = [...new Set(reports.map(r => r.testName))].map(test => ({ value: test, label: test }));
-
+const uniqueTests = [...new Set(reports.map(r => r.testName))].map(test => ({ value: test, label: test }));
   const barChartData = {
     labels: reports.map(r => r.subject),
     datasets: [{
@@ -171,6 +194,23 @@ function StudentReport() {
           <h2 className="card-title text-center mb-4">Student Report</h2>
           {error && <p className="text-danger text-center mb-3">{error}</p>}
           <div className="mb-3">
+            <label htmlFor="classId" className="form-label">Select Class</label>
+            <select
+              className="form-select"
+              id="classId"
+              value={selectedClassId}
+              onChange={(e) => setSelectedClassId(e.target.value)}
+              required
+            >
+              <option value="">Select a class</option>
+              {classes.map((cls) => (
+                <option key={cls.id} value={cls.id}>
+                  {cls.className} - {cls.section}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-3">
             <label htmlFor="studentId" className="form-label">Select Student</label>
             <select
               className="form-select"
@@ -178,6 +218,7 @@ function StudentReport() {
               value={selectedStudentId}
               onChange={(e) => setSelectedStudentId(e.target.value)}
               required
+              disabled={!selectedClassId} // Disable until class is selected
             >
               <option value="">Select a student</option>
               {students.map((student) => (
