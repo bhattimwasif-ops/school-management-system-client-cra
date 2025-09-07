@@ -7,12 +7,12 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, L
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import Select from 'react-select';
-import StudentReportCard from './StudentReportCard';
+import ResultCard from './ResultCard'; // Changed from StudentReportCard to avoid conflict
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend);
 
-function StudentReportCard() {
+function StudentReportCard() { // Renamed to avoid conflict with import
   const [classes, setClasses] = useState([]);
   const [selectedClassId, setSelectedClassId] = useState('');
   const [students, setStudents] = useState([]);
@@ -30,7 +30,7 @@ function StudentReportCard() {
 
   useEffect(() => {
     const fetchClasses = async () => {
-      console.log('Fetching classes...'); // Debug log
+      console.log('Fetching classes...');
       const token = localStorage.getItem('token');
       if (!token) {
         setError('No authentication token found.');
@@ -41,10 +41,10 @@ function StudentReportCard() {
         const response = await axios.get('https://localhost:7014/api/classes', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log('Classes response:', response.data); // Debug log
+        console.log('Classes response:', response.data);
         setClasses(response.data);
       } catch (err) {
-        console.error('Classes fetch error:', err); // Debug log
+        console.error('Classes fetch error:', err);
         setError('Error fetching classes.');
       }
     };
@@ -54,7 +54,7 @@ function StudentReportCard() {
   useEffect(() => {
     if (selectedClassId) {
       const fetchStudents = async () => {
-        console.log('Fetching students for classId:', selectedClassId); // Debug log
+        console.log('Fetching students for classId:', selectedClassId);
         const token = localStorage.getItem('token');
         if (!token) {
           setError('No authentication token found.');
@@ -65,11 +65,11 @@ function StudentReportCard() {
           const response = await axios.get(`https://localhost:7014/api/students/${selectedClassId}/students`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          console.log('Students response:', response.data); // Debug log
+          console.log('Students response:', response.data);
           setStudents(response.data);
           setSelectedStudentId(''); // Reset selected student
         } catch (err) {
-          console.error('Students fetch error:', err); // Debug log
+          console.error('Students fetch error:', err);
           setError('Error fetching students.');
         }
       };
@@ -103,7 +103,7 @@ function StudentReportCard() {
     }
   };
 
-  // ... (existing handlers and data remain unchanged)
+  // ... (existing handlers remain unchanged)
 
   return (
     <div className="d-flex flex-column min-vh-100 bg-light">
@@ -148,7 +148,6 @@ function StudentReportCard() {
           </div>
           {selectedStudentId && (
             <>
-              {/* ... (existing filters, charts, and ResultCard remain unchanged) */}
               <div className="mt-4">
                 <ResultCard selectedStudentId={selectedStudentId} />
               </div>
@@ -163,4 +162,4 @@ function StudentReportCard() {
   // ... (existing functions and data remain unchanged)
 };
 
-export default StudentReportCard;
+export default StudentReportCard; // Export with new name
