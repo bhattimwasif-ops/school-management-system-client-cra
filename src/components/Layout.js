@@ -21,6 +21,8 @@ import StudentForm from './StudentForm';
 import StudentList from './StudentList';
 import StudentDashboard from './StudentDashboard';
 import StudentAttendanceDetail from './StudentAttendanceDetail';
+import ResultCard from './ResultCard';
+import StudentReportCard from './StudentReportCard';
 // import SearchMarks from './SearchMarks';
 
 // Define routes
@@ -53,7 +55,10 @@ const router = createBrowserRouter([
       // { path: '/edit-marks-report', element: <EditMarks /> }, // Assuming EditMarks handles both editing and reports
       { path: '/global-test-report', element: <GlobalTestReport /> },
       { path: '/student-report-generator', element: <StudentReportGenerator /> },
-      { path: '/class-attendance-report', element: <ClassAttendanceReport /> }
+      { path: '/class-attendance-report', element: <ClassAttendanceReport /> },
+      { path: '/result-card', element: <ResultCard /> },
+      //{ path: '/student-result-card', element: <StudentReportCard /> },
+
 
 
     ],
@@ -109,6 +114,10 @@ function Layout() {
         { path: '/student-report', label: 'Test Performance Report' }, // Assuming StudentReport shows test performance
         // { path: '/global-test-report', label: 'Global Test Report' },
         // {path:'/student-report-generator', label: 'Student Result Card'}
+        { path: '/result-card', label: 'Result Card' }, 
+        //{ path: '/student-result-card', label: 'Student Result Card' }, 
+
+
       ],
     },
   ];
