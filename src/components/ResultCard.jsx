@@ -74,17 +74,17 @@ const ResultCard = ({ selectedStudentId }) => {
         setError('No student selected.');
         return;
       }
-      console.log('Fetching data for studentId:', selectedStudentId); // Debug log
+      console.log('Fetching data for studentId:', selectedStudentId);
       try {
         const token = localStorage.getItem('token');
         const response = await axios.get(`https://localhost:7014/api/studenttest/${selectedStudentId}/result`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log('API Response:', response.data); // Debug log
+        console.log('API Response:', response.data);
         setResultData(response.data);
         setError('');
       } catch (err) {
-        console.error('API Error:', err); // Debug log
+        console.error('API Error:', err);
         setError('Error fetching result data.');
         setResultData(null);
       }
@@ -111,7 +111,7 @@ const ResultCard = ({ selectedStudentId }) => {
           </tr>
           <tr>
             <td style={styles.infoCell}><strong>Father's Name:</strong></td><td style={styles.infoCell}>{resultData.fatherName || 'N/A'}</td>
-            <td style={styles.infoCell}><strong>Father's Roll No:</strong></td><td style={styles.infoCell}>{resultData.fatherRollNo || 'N/A'}</td>
+            <td style={styles.infoCell}><strong>Father's CNIC:</strong></td><td style={styles.infoCell}>{resultData.fatherCNIC || 'N/A'}</td>
           </tr>
           <tr>
             <td style={styles.infoCell}><strong>Date of Birth:</strong></td><td style={styles.infoCell}>{resultData.dateOfBirth || 'N/A'}</td>
@@ -133,14 +133,14 @@ const ResultCard = ({ selectedStudentId }) => {
           </tr>
         </thead>
         <tbody>
-          {resultData.subjects.map(([subject, max, obtained, grade, percentile, status], index) => (
+          {(resultData.subjects || []).map((subjectData, index) => (
             <tr key={index}>
-              <td style={styles.td}>{subject}</td>
-              <td style={styles.td}>{max}</td>
-              <td style={styles.td}>{obtained}</td>
-              <td style={styles.td}>{grade}</td>
-              <td style={styles.td}>{percentile}</td>
-              <td style={styles.td}>{status}</td>
+              <td style={styles.td}>{subjectData.subject}</td>
+              <td style={styles.td}>{subjectData.totalMarks}</td>
+              <td style={styles.td}>{subjectData.obtainedMarks}</td>
+              <td style={styles.td}>{subjectData.grade}</td>
+              <td style={styles.td}>{subjectData.percentile}</td>
+              <td style={styles.td}>{subjectData.status || 'PASS'}</td>
             </tr>
           ))}
           <tr>
