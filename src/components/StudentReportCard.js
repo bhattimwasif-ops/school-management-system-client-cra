@@ -88,9 +88,11 @@ const ResultCard = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setClasses(response.data);
-        debugger
-        const selectedClass = classes.find(cls => cls.id === parseInt(selectedClassId));
-        setSelectedClassName(selectedClass ? `${selectedClass.className} - ${selectedClass.section}` : '');
+        // Set the selected class name when classes are fetched and a class is selected
+        if (selectedClassId) {
+          const selectedClass = response.data.find(cls => cls.id === parseInt(selectedClassId));
+          setSelectedClassName(selectedClass ? `${selectedClass.className} - ${selectedClass.section}` : '');
+        }
       } catch (err) {
         setError('Error fetching classes.');
       }
@@ -108,6 +110,10 @@ const ResultCard = () => {
           });
           setTests(response.data);
           setSelectedTestId(''); // Reset test selection
+
+          // Update selected class name when class changes
+          const selectedClass = classes.find(cls => cls.id === parseInt(selectedClassId));
+          setSelectedClassName(selectedClass ? `${selectedClass.className} - ${selectedClass.section}` : '');
         } catch (err) {
           setError('Error fetching tests.');
         }
@@ -116,6 +122,7 @@ const ResultCard = () => {
     } else {
       setTests([]);
       setSelectedTestId('');
+      
     }
   }, [selectedClassId]);
 
