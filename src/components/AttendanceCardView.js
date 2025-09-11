@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import BASE_URL from './config'; 
 
 // Centralize base URL
-const BASE_URL = 'https://localhost:7014';
+//const BASE_URL = 'https://localhost:7014';
 
 function AttendanceCardView() {
   const [classes, setClasses] = useState([]);
