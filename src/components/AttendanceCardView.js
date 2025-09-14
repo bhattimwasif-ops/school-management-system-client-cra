@@ -3,7 +3,7 @@ import axios from 'axios';
 import BASE_URL from './config'; 
 
 // Centralize base URL
-//const BASE_URL = 'https://localhost:7014';
+//const BASE_URL = 'http://localhost:32000';
 
 function AttendanceCardView() {
   const [classes, setClasses] = useState([]);

@@ -77,7 +77,7 @@ const ResultCard = ({ selectedStudentId }) => {
       console.log('Fetching data for studentId:', selectedStudentId);
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`https://localhost:7014/api/studenttest/${selectedStudentId}/result`, {
+        const response = await axios.get(`http://localhost:32000/api/studenttest/${selectedStudentId}/result`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log('API Response:', response.data);

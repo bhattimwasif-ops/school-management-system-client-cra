@@ -4,7 +4,7 @@ const [results, setResults] = useState([]);
 const handleSubmit = async () => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axios.get(`https://localhost:7014/api/test/${selectedTestId}/marks`, {
+    const response = await axios.get(`http://localhost:32000/api/test/${selectedTestId}/marks`, {
       params: { studentId: allStudents ? null : selectedStudentId },
       headers: { Authorization: `Bearer ${token}` },
     });

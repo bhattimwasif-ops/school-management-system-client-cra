@@ -12,7 +12,7 @@ function ClassRegistration() {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      await axios.post('https://localhost:7014/api/classes', {
+      await axios.post('http://localhost:32000/api/classes', {
         className,
         section,
         teacher,

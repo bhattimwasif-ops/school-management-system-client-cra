@@ -84,7 +84,7 @@ const ResultCard = () => {
     const fetchClasses = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('https://localhost:7014/api/classes', {
+        const response = await axios.get('http://localhost:32000/api/classes', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setClasses(response.data);
@@ -105,7 +105,7 @@ const ResultCard = () => {
       const fetchTests = async () => {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.get(`https://localhost:7014/api/test/${selectedClassId}/tests`, {
+          const response = await axios.get(`http://localhost:32000/api/test/${selectedClassId}/tests`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setTests(response.data);
@@ -131,7 +131,7 @@ const ResultCard = () => {
       const fetchStudents = async () => {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.get(`https://localhost:7014/api/studenttest/${selectedTestId}/students`, {
+          const response = await axios.get(`http://localhost:32000/api/studenttest/${selectedTestId}/students`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setStudents(response.data);
@@ -154,7 +154,7 @@ const ResultCard = () => {
     if (!selectedStudentId) return;
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`https://localhost:7014/api/studenttest/${selectedStudentId}/result?testId=${selectedTestId}`, {
+      const response = await axios.get(`http://localhost:32000/api/studenttest/${selectedStudentId}/result?testId=${selectedTestId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       debugger

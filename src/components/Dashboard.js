@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const BASE_URL = 'https://localhost:7014';
+const BASE_URL = 'http://localhost:32000';
 function Dashboard() {
   const [stats, setStats] = useState({
     totalStudents: 0,

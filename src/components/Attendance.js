@@ -8,7 +8,7 @@ function Attendance() {
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get(`https://localhost:7014/api/attendance/students/${classId}`, {
+      const response = await axios.get(`http://localhost:32000/api/attendance/students/${classId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setStudents(response.data.map(student => ({ ...student, status: 'Present' })));
@@ -24,7 +24,7 @@ function Attendance() {
         date: new Date().toISOString(),
         status: student.status,
       }));
-      await axios.post('https://localhost:7014/api/attendance/mark', attendances, {
+      await axios.post('http://localhost:32000/api/attendance/mark', attendances, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       alert('Attendance saved successfully');

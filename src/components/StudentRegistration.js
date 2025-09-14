@@ -14,7 +14,7 @@ function StudentRegistration() {
         const fetchClasses = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get('https://localhost:7014/api/classes', { headers: { Authorization: `Bearer ${token}` } });
+                const response = await axios.get('http://localhost:32000/api/classes', { headers: { Authorization: `Bearer ${token}` } });
                 setClasses(response.data);
             } catch (err) {
                 setError('Error fetching classes');
@@ -26,7 +26,7 @@ function StudentRegistration() {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            await axios.post('https://localhost:7014/api/students', {
+            await axios.post('http://localhost:32000/api/students', {
                 name,
                 classId: parseInt(classId),
                 parentEmail,

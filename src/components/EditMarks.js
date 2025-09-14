@@ -23,7 +23,7 @@ function EditMarks({ report, onSave }) {
     }
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`https://localhost:7014/api/studenttest/${report.id}`, {
+      await axios.put(`http://localhost:32000/api/studenttest/${report.id}`, {
         Subject: subject,
         TotalMarks: totalMarks,
         ObtainedMarks: obtainedMarks,

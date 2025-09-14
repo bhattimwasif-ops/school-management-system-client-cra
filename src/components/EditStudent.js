@@ -16,7 +16,7 @@ function EditStudent() {
   useEffect(() => {
     const fetchStudent = async () => {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`https://localhost:7014/api/students/${id}`, {
+      const response = await axios.get(`http://localhost:32000/api/students/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setStudent(response.data);
@@ -31,14 +31,14 @@ function EditStudent() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
-    await axios.put(`https://localhost:7014/api/students/${id}`, student, {
+    await axios.put(`http://localhost:32000/api/students/${id}`, student, {
       headers: { Authorization: `Bearer ${token}` },
     });
     navigate('/students');
   };
   const handleDelete = async (id) => {
   const token = localStorage.getItem('token');
-  await axios.delete(`https://localhost:7014/api/students/${id}`, {
+  await axios.delete(`http://localhost:32000/api/students/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   setStudents(students.filter((s) => s.id !== id));

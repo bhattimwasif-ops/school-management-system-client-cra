@@ -3,7 +3,7 @@ import axios from 'axios';
 import StudentForm from './StudentForm';
 import StudentList from './StudentList';
 
-const BASE_URL = 'https://localhost:7014/api';
+const BASE_URL = 'http://localhost:32000/api';
 
 function StudentDashboard() {
   const [students, setStudents] = useState([]);

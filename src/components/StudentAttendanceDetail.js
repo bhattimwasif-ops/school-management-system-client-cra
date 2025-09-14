@@ -21,7 +21,7 @@ function StudentAttendanceDetail() {
     const fetchClasses = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('https://localhost:7014/api/classes', {
+        const response = await axios.get('http://localhost:32000/api/classes', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setClasses(response.data);
@@ -37,7 +37,7 @@ function StudentAttendanceDetail() {
       const fetchStudents = async () => {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.get(`https://localhost:7014/api/students/${selectedClassId}/students`, {
+          const response = await axios.get(`http://localhost:32000/api/students/${selectedClassId}/students`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setStudents(response.data);
@@ -64,7 +64,7 @@ function StudentAttendanceDetail() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`https://localhost:7014/api/attendance/student/${selectedStudentId}`, {
+      const response = await axios.get(`http://localhost:32000/api/attendance/student/${selectedStudentId}`, {
         params: { fromDate, toDate },
         headers: { Authorization: `Bearer ${token}` },
       });

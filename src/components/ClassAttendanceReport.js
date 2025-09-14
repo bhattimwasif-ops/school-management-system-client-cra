@@ -4,7 +4,7 @@ import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-
+import BASE_URL from './config'
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -23,7 +23,7 @@ function ClassAttendanceReport() {
     const fetchClasses = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('https://localhost:7014/api/classes', {
+        const response = await axios.get('http://localhost:32000/api/classes', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setClasses(response.data);
@@ -49,7 +49,7 @@ function ClassAttendanceReport() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`https://localhost:7014/api/attendance/class/${selectedClassId}`, {
+      const response = await axios.get(`http://localhost:32000/api/attendance/class/${selectedClassId}`, {
         params: { fromDate: fromDate, toDate: toDate },
         headers: { Authorization: `Bearer ${token}` },
       });

@@ -31,7 +31,7 @@ function StudentReport() {
     const fetchClasses = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('https://localhost:7014/api/classes', {
+        const response = await axios.get('http://localhost:32000/api/classes', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setClasses(response.data);
@@ -48,7 +48,7 @@ function StudentReport() {
       const fetchStudents = async () => {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.get(`https://localhost:7014/api/students/${selectedClassId}/students`, {
+          const response = await axios.get(`http://localhost:32000/api/students/${selectedClassId}/students`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setStudents(response.data);
@@ -74,7 +74,7 @@ function StudentReport() {
   const fetchReports = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`https://localhost:7014/api/studenttest/${selectedStudentId}/reports`, {
+      const response = await axios.get(`http://localhost:32000/api/studenttest/${selectedStudentId}/reports`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       let filtered = response.data;
@@ -107,7 +107,7 @@ function StudentReport() {
   const confirmDelete = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`https://localhost:7014/api/studenttest/${deleteReportId}`, {
+      await axios.delete(`http://localhost:32000/api/studenttest/${deleteReportId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setReports(reports.filter(r => r.id !== deleteReportId));

@@ -15,7 +15,7 @@ function AttendanceMultiSelect() {
     const fetchClasses = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('https://localhost:7014/api/classes', {
+        const response = await axios.get('http://localhost:32000/api/classes', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setClasses(response.data);
@@ -32,7 +32,7 @@ function AttendanceMultiSelect() {
       const fetchStudents = async () => {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.get(`https://localhost:7014/api/students/${selectedClassId}/students`, {
+          const response = await axios.get(`http://localhost:32000/api/students/${selectedClassId}/students`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setStudents(response.data);
@@ -59,7 +59,7 @@ function AttendanceMultiSelect() {
         date: new Date().toISOString(),
         status,
       }));
-      await axios.post('https://localhost:7014/api/attendance/manual-mark', attendances, {
+      await axios.post('http://localhost:32000/api/attendance/manual-mark', attendances, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSuccess('Attendance marked successfully!');

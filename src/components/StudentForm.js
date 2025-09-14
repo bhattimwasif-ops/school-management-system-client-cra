@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
-const BASE_URL = 'https://localhost:7014/api';
+const BASE_URL = 'http://localhost:32000/api';
 
 const initialFormData = {
   name: '',

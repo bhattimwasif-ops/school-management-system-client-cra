@@ -16,7 +16,7 @@ function TestDefinition() {
     const fetchClasses = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('https://localhost:7014/api/classes', {
+        const response = await axios.get('http://localhost:32000/api/classes', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setClasses(response.data);
@@ -31,7 +31,7 @@ function TestDefinition() {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      await axios.post('https://localhost:7014/api/test/create', {
+      await axios.post('http://localhost:32000/api/test/create', {
         ClassId: classId,
         Session: session,
         Type: type,
