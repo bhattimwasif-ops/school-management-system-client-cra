@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import BASE_URL from './config';
 const ResultCard = ({ selectedStudentId }) => {
   const [resultData, setResultData] = useState(null);
   const [error, setError] = useState('');
@@ -77,7 +77,7 @@ const ResultCard = ({ selectedStudentId }) => {
       console.log('Fetching data for studentId:', selectedStudentId);
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`http://localhost:32000/api/studenttest/${selectedStudentId}/result`, {
+        const response = await axios.get(`${BASE_URL}/api/studenttest/${selectedStudentId}/result`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log('API Response:', response.data);

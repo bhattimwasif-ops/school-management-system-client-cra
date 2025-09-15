@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import BASE_URL from './config';
 function Attendance() {
   const [classId, setClassId] = useState(1);
   const [students, setStudents] = useState([]);
@@ -8,7 +8,7 @@ function Attendance() {
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get(`http://localhost:32000/api/attendance/students/${classId}`, {
+      const response = await axios.get(`${BASE_URL}/api/attendance/students/${classId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setStudents(response.data.map(student => ({ ...student, status: 'Present' })));
@@ -24,7 +24,7 @@ function Attendance() {
         date: new Date().toISOString(),
         status: student.status,
       }));
-      await axios.post('http://localhost:32000/api/attendance/mark', attendances, {
+      await axios.post(`${BASE_URL}/api/attendance/mark`, attendances, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       alert('Attendance saved successfully');

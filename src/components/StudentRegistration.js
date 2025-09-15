@@ -1,6 +1,6 @@
 import React, { use, useState,useEffect } from 'react';
 import axios from 'axios';
-
+import BASE_URL from './config';
 function StudentRegistration() {
   const [name, setName] = useState('');
   const [classId, setClassId] = useState('');
@@ -14,7 +14,7 @@ function StudentRegistration() {
         const fetchClasses = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get('http://localhost:32000/api/classes', { headers: { Authorization: `Bearer ${token}` } });
+                const response = await axios.get(`${BASE_URL}/api/classes`, { headers: { Authorization: `Bearer ${token}` } });
                 setClasses(response.data);
             } catch (err) {
                 setError('Error fetching classes');
@@ -26,7 +26,7 @@ function StudentRegistration() {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            await axios.post('http://localhost:32000/api/students', {
+            await axios.post(`${BASE_URL}/api/students`, {
                 name,
                 classId: parseInt(classId),
                 parentEmail,

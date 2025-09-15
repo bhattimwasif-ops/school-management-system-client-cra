@@ -1,10 +1,11 @@
+import BASE_URL from "./config";
 const [allStudents, setAllStudents] = useState(false);
 const [results, setResults] = useState([]);
 
 const handleSubmit = async () => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axios.get(`http://localhost:32000/api/test/${selectedTestId}/marks`, {
+    const response = await axios.get(`${BASE_URL}/api/test/${selectedTestId}/marks`, {
       params: { studentId: allStudents ? null : selectedStudentId },
       headers: { Authorization: `Bearer ${token}` },
     });

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import BASE_URL from './config';
 function EditMarks({ report, onSave }) {
   const [subject, setSubject] = useState(report?.subject || '');
   const [totalMarks, setTotalMarks] = useState(report?.totalMarks || 0);
@@ -23,7 +23,7 @@ function EditMarks({ report, onSave }) {
     }
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:32000/api/studenttest/${report.id}`, {
+      await axios.put(`${BASE_URL}/api/studenttest/${report.id}`, {
         Subject: subject,
         TotalMarks: totalMarks,
         ObtainedMarks: obtainedMarks,

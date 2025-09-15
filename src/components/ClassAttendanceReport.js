@@ -23,7 +23,7 @@ function ClassAttendanceReport() {
     const fetchClasses = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:32000/api/classes', {
+        const response = await axios.get(`${BASE_URL}/api/classes`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setClasses(response.data);
@@ -49,7 +49,7 @@ function ClassAttendanceReport() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:32000/api/attendance/class/${selectedClassId}`, {
+      const response = await axios.get(`${BASE_URL}/api/attendance/class/${selectedClassId}`, {
         params: { fromDate: fromDate, toDate: toDate },
         headers: { Authorization: `Bearer ${token}` },
       });

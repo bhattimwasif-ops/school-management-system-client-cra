@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import BASE_URL from './config';
 function ClassRegistration() {
   const [className, setClassName] = useState('');
   const [section, setSection] = useState('');
@@ -12,7 +12,7 @@ function ClassRegistration() {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:32000/api/classes', {
+      await axios.post(`${BASE_URL}/api/classes`, {
         className,
         section,
         teacher,

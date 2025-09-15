@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import BASE_URL from './config';
 
 function StudentReportGenerator() {
   const [classes, setClasses] = useState([]);
@@ -20,7 +21,7 @@ function StudentReportGenerator() {
     const fetchClasses = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:32000/api/classes', {
+        const response = await axios.get(`${BASE_URL}/api/classes`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setClasses(response.data);
@@ -36,7 +37,7 @@ function StudentReportGenerator() {
       const fetchTests = async () => {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.get(`http://localhost:32000/api/test/${selectedClassId}/tests`, {
+          const response = await axios.get(`${BASE_URL}/api/test/${selectedClassId}/tests`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setTests(response.data);
@@ -48,7 +49,7 @@ function StudentReportGenerator() {
       const fetchStudents = async () => {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.get(`http://localhost:32000/api/students/${selectedClassId}/students`, {
+          const response = await axios.get(`${BASE_URL}/api/students/${selectedClassId}/students`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setStudents(response.data);
@@ -63,7 +64,7 @@ function StudentReportGenerator() {
   const handleSearch = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:32000/api/studenttest/${selectedClassId}/marks`, {
+      const response = await axios.get(`${BASE_URL}/api/studenttest/${selectedClassId}/marks`, {
         params: { testId: selectedTestId, studentId: allStudents ? null : selectedStudentId },
         headers: { Authorization: `Bearer ${token}` },
       });

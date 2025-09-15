@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
-const BASE_URL = 'http://localhost:32000';
+import BASE_URL from './config';
+//const BASE_URL = 'http://localhost:32000';
 
 function Login() {
   const [email, setUsername] = useState('');

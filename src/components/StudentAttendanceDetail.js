@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Pie, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend } from 'chart.js';
+import BASE_URL from './config';
 
 // Register Chart.js components
 ChartJS.register(ArcElement, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend);
@@ -21,7 +22,7 @@ function StudentAttendanceDetail() {
     const fetchClasses = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:32000/api/classes', {
+        const response = await axios.get(`${BASE_URL}/api/classes`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setClasses(response.data);
@@ -37,7 +38,7 @@ function StudentAttendanceDetail() {
       const fetchStudents = async () => {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.get(`http://localhost:32000/api/students/${selectedClassId}/students`, {
+          const response = await axios.get(`${BASE_URL}/api/students/${selectedClassId}/students`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setStudents(response.data);
@@ -64,7 +65,7 @@ function StudentAttendanceDetail() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:32000/api/attendance/student/${selectedStudentId}`, {
+      const response = await axios.get(`${BASE_URL}/api/attendance/student/${selectedStudentId}`, {
         params: { fromDate, toDate },
         headers: { Authorization: `Bearer ${token}` },
       });

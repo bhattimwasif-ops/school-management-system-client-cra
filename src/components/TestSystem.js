@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-const BASE_URL = 'http://localhost:32000';
+import BASE_URL from './config';
 
 function TestSystem() {
   const [classes, setClasses] = useState([]);

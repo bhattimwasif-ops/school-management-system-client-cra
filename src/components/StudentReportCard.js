@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-
+import BASE_URL from './config';
 const ResultCard = () => {
   const [classes, setClasses] = useState([]);
   const [selectedClassId, setSelectedClassId] = useState('');
@@ -84,7 +84,7 @@ const ResultCard = () => {
     const fetchClasses = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:32000/api/classes', {
+        const response = await axios.get(`${BASE_URL}/api/classes`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setClasses(response.data);
@@ -105,7 +105,7 @@ const ResultCard = () => {
       const fetchTests = async () => {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.get(`http://localhost:32000/api/test/${selectedClassId}/tests`, {
+          const response = await axios.get(`${BASE_URL}/api/test/${selectedClassId}/tests`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setTests(response.data);
@@ -131,7 +131,7 @@ const ResultCard = () => {
       const fetchStudents = async () => {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.get(`http://localhost:32000/api/studenttest/${selectedTestId}/students`, {
+          const response = await axios.get(`${BASE_URL}/api/studenttest/${selectedTestId}/students`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setStudents(response.data);
@@ -154,7 +154,7 @@ const ResultCard = () => {
     if (!selectedStudentId) return;
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:32000/api/studenttest/${selectedStudentId}/result?testId=${selectedTestId}`, {
+      const response = await axios.get(`${BASE_URL}/api/studenttest/${selectedStudentId}/result?testId=${selectedTestId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       debugger

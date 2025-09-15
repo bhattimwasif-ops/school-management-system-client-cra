@@ -7,7 +7,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, L
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import Select from 'react-select';
-
+import BASE_URL from './config';
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -31,7 +31,7 @@ function StudentReport() {
     const fetchClasses = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:32000/api/classes', {
+        const response = await axios.get(`${BASE_URL}/api/classes`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setClasses(response.data);
@@ -48,7 +48,7 @@ function StudentReport() {
       const fetchStudents = async () => {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.get(`http://localhost:32000/api/students/${selectedClassId}/students`, {
+          const response = await axios.get(`${BASE_URL}/api/students/${selectedClassId}/students`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setStudents(response.data);
@@ -74,7 +74,7 @@ function StudentReport() {
   const fetchReports = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:32000/api/studenttest/${selectedStudentId}/reports`, {
+      const response = await axios.get(`${BASE_URL}/api/studenttest/${selectedStudentId}/reports`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       let filtered = response.data;
@@ -107,7 +107,7 @@ function StudentReport() {
   const confirmDelete = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:32000/api/studenttest/${deleteReportId}`, {
+      await axios.delete(`${BASE_URL}/api/studenttest/${deleteReportId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setReports(reports.filter(r => r.id !== deleteReportId));
