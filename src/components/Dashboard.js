@@ -34,7 +34,7 @@ function Dashboard() {
 
   return (
     <div className="bg-dark text-white p-3" style={{ borderRadius: '8px', minHeight: '80vh' }}>
-      <h2 className="mb-4">Dashboard</h2>
+      <h2 className="mb-4">NOMI PUBLIC HIGH SCHOOL - Dashboard  </h2>
       {error && <div className="alert alert-danger">{error}</div>}
       <div className="row">
         {/* Total Students Card */}

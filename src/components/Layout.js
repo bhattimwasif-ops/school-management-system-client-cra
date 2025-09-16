@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet, useLocation, Link } from 'react-router-dom';
+import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
 import { createBrowserRouter } from 'react-router-dom';
 import Login from './Login';
 import Attendance from './Attendance';
@@ -23,58 +23,23 @@ import StudentDashboard from './StudentDashboard';
 import StudentAttendanceDetail from './StudentAttendanceDetail';
 import ResultCard from './ResultCard';
 import StudentReportCard from './StudentReportCard';
-// import SearchMarks from './SearchMarks';
-
-// Define routes
-const router = createBrowserRouter([
-  {
-    path: '/login',
-    element: <Login />,
-  },
-  {
-    path: '/',
-    element: <ProtectedRoute><Layout /></ProtectedRoute>,
-    children: [
-      { path: '/dashboard', element: <Dashboard /> },
-      // { path: '/attendance', element: <Attendance /> },
-      { path: '/student-form', element: <StudentForm /> },
-      { path: '/student-list', element: <StudentList /> },
-      { path: '/student-dashboard', element: <StudentDashboard /> },
-      { path: '/student-attendance-detail', element: <StudentAttendanceDetail /> },
-
-
-
-      { path: '/class-registration', element: <ClassRegistration /> },
-      { path: '/student-registration', element: <StudentRegistration /> },
-      { path: '/attendance-multi-select', element: <AttendanceMultiSelect /> },
-      { path: '/attendance-grid', element: <AttendanceGrid /> },
-      { path: '/attendance-card-view', element: <AttendanceCardView /> },
-      { path: '/test-system', element: <TestSystem /> },
-      { path: '/test-definition', element: <TestDefinition /> },
-      { path: '/student-report', element: <StudentReport /> },
-      // { path: '/edit-marks-report', element: <EditMarks /> }, // Assuming EditMarks handles both editing and reports
-      { path: '/global-test-report', element: <GlobalTestReport /> },
-      { path: '/student-report-generator', element: <StudentReportGenerator /> },
-      { path: '/class-attendance-report', element: <ClassAttendanceReport /> },
-      //{ path: '/result-card', element: <ResultCard /> },
-      { path: '/student-result-card', element: <StudentReportCard /> },
-
-
-
-    ],
-  },
-]);
+import AddMarksStudentGrid from './AddMarksStudentGrid';
 
 function Layout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleToggle = () => {
-    console.log('Toggle clicked');
+    console.log('Toggle clicked, isSidebarOpen:', !isSidebarOpen); // Debug log
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Hierarchical menu structure
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
   const menuItems = [
     { path: '/dashboard', label: 'Dashboard', isParent: false },
     {
@@ -83,24 +48,20 @@ function Layout() {
       children: [
         { path: '/class-registration', label: 'Class Setup' },
         { path: '/student-registration', label: 'Student Enrollment' },
-        // { path: '/student-form', label: 'Student Form' },
-        { path: '/student-Dashboard', label: 'Student Dashboard' },
-
-        // { path: '/student-list', label: 'Student List' },
-
+        { path: '/student-form', label: 'Student Form' },
+        { path: '/student-list', label: 'Student List' },
+        { path: '/student-dashboard', label: 'Student Dashboard' },
       ],
     },
     {
       label: 'Attendance Management System (AMS)',
       isParent: true,
       children: [
-        // { path: '/attendance', label: 'Attendance Log' },
         { path: '/attendance-multi-select', label: 'Attendance Multi-Select' },
         { path: '/attendance-grid', label: 'Attendance Grid View' },
         { path: '/attendance-card-view', label: 'Attendance Card View' },
         { path: '/class-attendance-report', label: 'Attendance Report' },
         { path: '/student-attendance-detail', label: 'Student Attendance Report' },
-
       ],
     },
     {
@@ -108,18 +69,14 @@ function Layout() {
       isParent: true,
       children: [
         { path: '/test-definition', label: 'Exam/Test Configuration' },
-        { path: '/test-system', label: 'Add Marks' }, // Assuming TestSystem handles adding marks
-        // { path: '/edit-marks-report', label: 'Edit Marks & Reports' },
-        // { path: '/search-marks', label: 'SearchMark' },
-        { path: '/student-report', label: 'Test Performance Report' }, // Assuming StudentReport shows test performance
-        // { path: '/global-test-report', label: 'Global Test Report' },
-        // {path:'/student-report-generator', label: 'Student Result Card'}
-        //{ path: '/result-card', label: 'Result Card' }, 
-        { path: '/student-result-card', label: 'Student Result Card' }, 
+        { path: '/test-system', label: 'Add Marks' },
+        { path: '/student-report', label: 'Test Performance Report' },
+        { path: '/student-result-card', label: 'Student Result Card' },
+        { path: '/add-marks-student-grid', label: 'Add Marks Student Grid' },
 
-
-      ],
+      ],//AddMarksStudentGrid
     },
+    { label: 'Logout', isParent: false, onClick: handleLogout },
   ];
 
   return (
@@ -131,7 +88,7 @@ function Layout() {
         onClick={handleToggle}
         style={{ position: 'fixed', zIndex: 1000, borderRadius: '50%', width: '40px', height: '40px', padding: 0, border: 'none' }}
       >
-        <span className="navbar-toggler-icon" style={{ color: isSidebarOpen ? '#0e0d0dff' : '#ccc' }}></span>
+        <span className="navbar-toggler-icon" style={{ color: isSidebarOpen ? '#0e0d0dff' : '#562d2dff' }}></span>
       </button>
 
       {/* Sidebar */}
@@ -143,7 +100,7 @@ function Layout() {
           position: 'fixed',
           height: '100vh',
           paddingTop: '60px',
-          transition: 'width 0.3s ease-in-out',
+          transition: 'all 0.3s ease-in-out', // Ensure smooth transition for all properties
           overflowY: 'auto',
           backgroundColor: '#222',
           color: '#fff',
@@ -151,7 +108,7 @@ function Layout() {
         }}
       >
         <div className="p-3 border-bottom border-secondary">
-          <h4 className="mb-0 text-white">Hub</h4>
+          <h4 className="mb-0 text-white">NPHS</h4>
         </div>
         <div className="list-group list-group-flush">
           {menuItems.map((item) =>
@@ -177,7 +134,7 @@ function Layout() {
                         to={child.path}
                         className={`list-group-item list-group-item-action ${location.pathname === child.path ? 'active' : ''}`}
                         aria-current={location.pathname === child.path ? 'page' : undefined}
-                        style={{ color: '#ccc' }}
+                        style={{ color: '#080c86ff' }} // Changed to a more readable color
                         onClick={() => setIsSidebarOpen(false)}
                       >
                         {child.label}
@@ -187,16 +144,17 @@ function Layout() {
                 </ul>
               </div>
             ) : (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`list-group-item list-group-item-action ${location.pathname === item.path ? 'active' : ''}`}
-                aria-current={location.pathname === item.path ? 'page' : undefined}
-                style={{ color: '#fff' }}
-                onClick={() => setIsSidebarOpen(false)}
+              <div
+                key={item.label}
+                className={`list-group-item list-group-item-action ${location.pathname === '/logout' ? 'active' : ''}`}
+                style={{ color: '#2f075cff', cursor: 'pointer' }}
+                onClick={() => {
+                  if (item.onClick) item.onClick();
+                  setIsSidebarOpen(false);
+                }}
               >
                 {item.label}
-              </Link>
+              </div>
             )
           )}
         </div>
@@ -208,7 +166,7 @@ function Layout() {
         style={{
           marginLeft: (isSidebarOpen || window.innerWidth >= 768) ? '250px' : '0',
           padding: '20px',
-          transition: 'margin-left 0.3s ease-in-out',
+          transition: 'all 0.3s ease-in-out', // Ensure smooth transition
           width: `calc(100% - ${(isSidebarOpen || window.innerWidth >= 768) ? '250px' : '0'})`,
           backgroundColor: '#fff',
           borderRadius: '8px',
@@ -231,5 +189,39 @@ function Layout() {
     </div>
   );
 }
+
+// Define routes
+const router = createBrowserRouter([
+  {
+    path: '/login',
+    element: <Login />,
+  },
+  {
+    path: '/',
+    element: <ProtectedRoute><Layout /></ProtectedRoute>,
+    errorElement: <div className="text-center p-4">Page Not Found (404). <Link to="/dashboard">Go to Dashboard</Link></div>,
+    children: [
+      { path: '/dashboard', element: <Dashboard /> },
+      { path: '/student-form', element: <StudentForm /> },
+      { path: '/student-list', element: <StudentList /> },
+      { path: '/student-dashboard', element: <StudentDashboard /> },
+      { path: '/student-attendance-detail', element: <StudentAttendanceDetail /> },
+      { path: '/class-registration', element: <ClassRegistration /> },
+      { path: '/student-registration', element: <StudentRegistration /> },
+      { path: '/attendance-multi-select', element: <AttendanceMultiSelect /> },
+      { path: '/attendance-grid', element: <AttendanceGrid /> },
+      { path: '/attendance-card-view', element: <AttendanceCardView /> },
+      { path: '/test-system', element: <TestSystem /> },
+      { path: '/test-definition', element: <TestDefinition /> },
+      { path: '/student-report', element: <StudentReport /> },
+      { path: '/global-test-report', element: <GlobalTestReport /> },
+      { path: '/student-report-generator', element: <StudentReportGenerator /> },
+      { path: '/class-attendance-report', element: <ClassAttendanceReport /> },
+      { path: '/student-result-card', element: <StudentReportCard /> },
+      { path: '/add-marks-student-grid', element: <AddMarksStudentGrid /> },
+
+    ],
+  },
+]);
 
 export { Layout, router };
