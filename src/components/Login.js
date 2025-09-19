@@ -8,11 +8,11 @@ function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      debugger
-
+      debugger;
       const response = await axios.post(`${BASE_URL}/api/auth/login`, { email, password });
       localStorage.setItem('token', response.data.token);
       navigate('/dashboard');
@@ -24,6 +24,9 @@ function Login() {
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-dark">
       <div className="card p-4" style={{ width: '100%', maxWidth: '400px', backgroundColor: '#222', color: '#fff' }}>
+        <div className="text-center mb-4">
+          <img src={require('../school-logo.png')} alt="School Logo" style={{ maxWidth: '250px', height: 'auto' }} />
+        </div>
         <h2 className="text-center mb-4">Login</h2>
         {error && <div className="alert alert-danger" role="alert">{error}</div>}
         <form onSubmit={handleSubmit}>

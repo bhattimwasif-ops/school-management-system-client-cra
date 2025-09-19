@@ -46,10 +46,10 @@ function Layout() {
       label: 'Student Management System',
       isParent: true,
       children: [
-        { path: '/class-registration', label: 'Class Setup' },
-        { path: '/student-registration', label: 'Student Enrollment' },
-        { path: '/student-form', label: 'Student Form' },
-        { path: '/student-list', label: 'Student List' },
+        // { path: '/class-registration', label: 'Class Setup' },
+        // { path: '/student-registration', label: 'Student Enrollment' },
+        // { path: '/student-form', label: 'Student Form' },
+        // { path: '/student-list', label: 'Student List' },
         { path: '/student-dashboard', label: 'Student Dashboard' },
       ],
     },
@@ -73,8 +73,7 @@ function Layout() {
         { path: '/student-report', label: 'Test Performance Report' },
         { path: '/student-result-card', label: 'Student Result Card' },
         { path: '/add-marks-student-grid', label: 'Add Marks Student Grid' },
-
-      ],//AddMarksStudentGrid
+      ],
     },
     { label: 'Logout', isParent: false, onClick: handleLogout },
   ];
@@ -100,15 +99,15 @@ function Layout() {
           position: 'fixed',
           height: '100vh',
           paddingTop: '60px',
-          transition: 'all 0.3s ease-in-out', // Ensure smooth transition for all properties
+          transition: 'all 0.3s ease-in-out',
           overflowY: 'auto',
           backgroundColor: '#222',
           color: '#fff',
           boxShadow: isSidebarOpen ? '2px 0 10px rgba(0,0,0,0.5)' : 'none',
         }}
       >
-        <div className="p-3 border-bottom border-secondary">
-          <h4 className="mb-0 text-white">NPHS</h4>
+        <div className="p-3 border-bottom border-secondary text-center">
+<img src={require('../school-logo.png')} alt="School Logo" style={{ maxWidth: '200px', height: 'auto', marginBottom: '10px' }} />          <h4 className="mb-0 text-white"></h4>
         </div>
         <div className="list-group list-group-flush">
           {menuItems.map((item) =>
@@ -134,7 +133,7 @@ function Layout() {
                         to={child.path}
                         className={`list-group-item list-group-item-action ${location.pathname === child.path ? 'active' : ''}`}
                         aria-current={location.pathname === child.path ? 'page' : undefined}
-                        style={{ color: '#080c86ff' }} // Changed to a more readable color
+                        style={{ color: '#080c86ff' }}
                         onClick={() => setIsSidebarOpen(false)}
                       >
                         {child.label}
@@ -166,7 +165,7 @@ function Layout() {
         style={{
           marginLeft: (isSidebarOpen || window.innerWidth >= 768) ? '250px' : '0',
           padding: '20px',
-          transition: 'all 0.3s ease-in-out', // Ensure smooth transition
+          transition: 'all 0.3s ease-in-out',
           width: `calc(100% - ${(isSidebarOpen || window.innerWidth >= 768) ? '250px' : '0'})`,
           backgroundColor: '#fff',
           borderRadius: '8px',
@@ -219,7 +218,6 @@ const router = createBrowserRouter([
       { path: '/class-attendance-report', element: <ClassAttendanceReport /> },
       { path: '/student-result-card', element: <StudentReportCard /> },
       { path: '/add-marks-student-grid', element: <AddMarksStudentGrid /> },
-
     ],
   },
 ]);

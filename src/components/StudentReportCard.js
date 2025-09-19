@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import BASE_URL from './config';
+import schoolLogo from '../school-logo.png'; // Static import
+
 const ResultCard = () => {
   const [classes, setClasses] = useState([]);
   const [selectedClassId, setSelectedClassId] = useState('');
@@ -11,11 +13,24 @@ const ResultCard = () => {
   const [students, setStudents] = useState([]);
   const [selectedTestName, setSelectedTestName] = useState('');
   const [selectedClassName, setSelectedClassName] = useState('');
-
   const [selectedStudentId, setSelectedStudentId] = useState('');
   const [resultData, setResultData] = useState(null);
   const [error, setError] = useState('');
+  const [logoSrc, setLogoSrc] = useState(schoolLogo); // Local state for logo
+  const printContentRef = useRef(null); // Ref for print content
 
+  useEffect(() => {
+    const img = new Image();
+    img.src = schoolLogo; // Preload the image
+    img.onload = () => {
+      console.log('Logo preloaded');
+      setLogoSrc(schoolLogo); // Ensure logo is set on load
+    };
+    img.onerror = () => {
+      console.error('Logo failed to load');
+      setLogoSrc(''); // Fallback if image fails
+    };
+  }, []);
 
   const styles = {
     container: {
@@ -27,17 +42,32 @@ const ResultCard = () => {
       margin: 'auto',
     },
     header: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      marginBottom: '10px',
+    },
+    logo: {
+      maxWidth: '120px',
+      height: 'auto',
+      marginBottom: '5px',
+    },
+    institution: {
       textAlign: 'center',
+      fontSize: '16px',
       textTransform: 'uppercase',
+      color: '#333',
     },
     subHeader: {
       textAlign: 'center',
-      marginBottom: '20px',
+      marginBottom: '10px',
+      fontSize: '16px',
+      color: '#555',
     },
     table: {
       width: '100%',
       borderCollapse: 'collapse',
-      marginTop: '20px',
+      marginTop: '10px',
       fontSize: '14px',
     },
     th: {
@@ -88,7 +118,6 @@ const ResultCard = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setClasses(response.data);
-        // Set the selected class name when classes are fetched and a class is selected
         if (selectedClassId) {
           const selectedClass = response.data.find(cls => cls.id === parseInt(selectedClassId));
           setSelectedClassName(selectedClass ? `${selectedClass.className} - ${selectedClass.section}` : '');
@@ -109,9 +138,7 @@ const ResultCard = () => {
             headers: { Authorization: `Bearer ${token}` },
           });
           setTests(response.data);
-          setSelectedTestId(''); // Reset test selection
-
-          // Update selected class name when class changes
+          setSelectedTestId('');
           const selectedClass = classes.find(cls => cls.id === parseInt(selectedClassId));
           setSelectedClassName(selectedClass ? `${selectedClass.className} - ${selectedClass.section}` : '');
         } catch (err) {
@@ -122,7 +149,6 @@ const ResultCard = () => {
     } else {
       setTests([]);
       setSelectedTestId('');
-      
     }
   }, [selectedClassId]);
 
@@ -135,7 +161,7 @@ const ResultCard = () => {
             headers: { Authorization: `Bearer ${token}` },
           });
           setStudents(response.data);
-          setSelectedStudentId(''); // Reset student selection
+          setSelectedStudentId('');
           const selectedTest = tests.find(test => test.id === parseInt(selectedTestId));
           setSelectedTestName(selectedTest ? selectedTest.name : '');
         } catch (err) {
@@ -146,7 +172,7 @@ const ResultCard = () => {
     } else {
       setStudents([]);
       setSelectedStudentId('');
-      setSelectedTestName(''); // Reset test name
+      setSelectedTestName('');
     }
   }, [selectedTestId]);
 
@@ -157,7 +183,7 @@ const ResultCard = () => {
       const response = await axios.get(`${BASE_URL}/api/studenttest/${selectedStudentId}/result?testId=${selectedTestId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      debugger
+      debugger;
       setResultData(response.data);
       setError('');
     } catch (err) {
@@ -184,12 +210,12 @@ const ResultCard = () => {
   };
 
   const handlePrint = () => {
-    const printContent = document.getElementById('result-card-content');
+    const printContent = printContentRef.current.cloneNode(true); // Use ref for cloning
     if (!printContent) return;
 
     const printWindow = window.open('', '', 'height=600,width=800');
     printWindow.document.write('<html><head><title>Result Report</title>');
-    printWindow.document.write('<style>body { font-family: Arial, sans-serif; padding: 20px; } table { width: 100%; border-collapse: collapse; } th, td { border: 1px solid #000; padding: 8px; text-align: center; } th { background-color: #f0f0f0; } .note { font-size: 12px; margin-top: 30px; } .footer { margin-top: 30px; display: flex; justify-content: space-between; font-size: 14px; } .qr { text-align: center; margin-top: 10px; } .signature { text-align: right; font-style: italic; }</style>');
+    printWindow.document.write('<style>body { font-family: Arial, sans-serif; padding: 20px; } table { width: 100%; border-collapse: collapse; } th, td { border: 1px solid #000; padding: 8px; text-align: center; } th { background-color: #f0f0f0; } .note { font-size: 12px; margin-top: 30px; } .footer { margin-top: 30px; display: flex; justify-content: space-between; font-size: 14px; } .qr { text-align: center; margin-top: 10px; } .signature { text-align: right; font-style: italic; } .header img { max-width: 120px; margin-bottom: 10px; }</style>');
     printWindow.document.write('</head><body>');
     printWindow.document.write(printContent.innerHTML);
     printWindow.document.write('</body></html>');
@@ -197,10 +223,13 @@ const ResultCard = () => {
     printWindow.focus();
     printWindow.print();
     printWindow.close();
+
+    // Re-apply logoSrc after print to ensure it persists
+    setTimeout(() => setLogoSrc(schoolLogo), 100); // Small delay to ensure print window closes
   };
 
   return (
-    <div style={styles.container}>     
+    <div style={styles.container}>
       <div className="mb-3">
         <label htmlFor="classId" className="form-label">Select Class</label>
         <select className="form-select" id="classId" value={selectedClassId} onChange={(e) => setSelectedClassId(e.target.value)} required>
@@ -221,7 +250,6 @@ const ResultCard = () => {
             <option key={test.id} value={test.id}>
               {test.name} ({test.type})
             </option>
-
           ))}
         </select>
       </div>
@@ -248,13 +276,17 @@ const ResultCard = () => {
 
       {error && <p className="text-danger text-center mb-4">{error}</p>}
       {resultData && (
-        
-        <div id="result-card-content">
-           <h1 style={styles.header}>{resultData.institution || 'N/A'}</h1>
-      <h2 style={styles.subHeader}>
-        Regular Test System ({selectedClassName}) ({selectedTestName}) Examination, 2025
-      </h2>
-      <h2 style={styles.subHeader}>Group: Science</h2>
+        <div id="result-card-content" ref={printContentRef}>
+          <div style={styles.header}>
+            <img src={logoSrc} alt="School Logo" style={styles.logo} />
+            <h4 style={styles.institution}>
+              <b>{resultData.institution || 'N/A'}</b>
+            </h4>
+          </div>
+          <h4 style={styles.subHeader}>
+            <b>({selectedClassName}) ({selectedTestName}), 2025 - 2026</b>
+          </h4>
+          <h2 style={styles.subHeader}></h2>
 
           <table style={styles.infoTable}>
             <tbody>
@@ -269,7 +301,6 @@ const ResultCard = () => {
               <tr>
                 <td style={styles.infoCell}><strong>Date of Birth:</strong></td><td style={styles.infoCell}>{resultData.dateOfBirth || 'N/A'}</td>
                 <td style={styles.infoCell}><strong>Institution / District:</strong></td>
-                {/* <td style={styles.infoCell}>{resultData.institution || 'N/A'}</td> */}
               </tr>
             </tbody>
           </table>
@@ -298,9 +329,7 @@ const ResultCard = () => {
               ))}
               <tr>
                 <th style={styles.th} colSpan="5">Total</th>
-                <th style={styles.th}>{resultData.totalStatus || 'PASS'} 
-                  {/* {resultData.totalMarks || 'N/A'} */}
-                </th>
+                <th style={styles.th}>{resultData.totalStatus || 'PASS'}</th>
               </tr>
             </tbody>
           </table>
@@ -317,9 +346,7 @@ const ResultCard = () => {
           </div>
 
           <div style={styles.footer}>
-            <div style={styles.signature}><strong>Incharge of Examinations</strong>
-              {/* <br />{resultData.resultDeclaredOn || '20 Aug 2025'} */}
-            </div>
+            <div style={styles.signature}><strong>Incharge of Examinations</strong></div>
             <div style={styles.signature}>Principal:</div>
           </div>
 

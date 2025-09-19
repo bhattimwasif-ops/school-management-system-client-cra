@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import BASE_URL from './config';
 
 function AddMarksStudentGrid() {
@@ -9,8 +11,8 @@ function AddMarksStudentGrid() {
   const [selectedTestId, setSelectedTestId] = useState('');
   const [students, setStudents] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState('');
-  const [marks, setMarks] = useState({}); // Stores obtained marks
-  const [totalMarks, setTotalMarks] = useState({}); // Stores editable total marks per student
+  const [marks, setMarks] = useState({});
+  const [totalMarks, setTotalMarks] = useState(30); // Single editable total marks outside grid
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -29,6 +31,7 @@ function AddMarksStudentGrid() {
         setClasses(response.data);
       } catch (err) {
         setError('Error fetching classes.');
+        toast.error('Error fetching classes.');
       }
     };
     fetchClasses();
@@ -46,6 +49,7 @@ function AddMarksStudentGrid() {
           setSelectedTestId(''); // Reset test on class change
         } catch (err) {
           setError('Error fetching tests.');
+          toast.error('Error fetching tests.');
         }
       };
       fetchTests();
@@ -57,11 +61,11 @@ function AddMarksStudentGrid() {
             headers: { Authorization: `Bearer ${token}` },
           });
           setStudents(response.data);
-          // Reset marks and total marks when students change
+          // Reset marks when students change
           setMarks(response.data.reduce((acc, student) => ({ ...acc, [student.id]: 0 }), {}));
-          setTotalMarks(response.data.reduce((acc, student) => ({ ...acc, [student.id]: 30 }), {})); // Default total marks as 30
         } catch (err) {
           setError('Error fetching students.');
+          toast.error('Error fetching students.');
         }
       };
       fetchStudents();
@@ -69,20 +73,20 @@ function AddMarksStudentGrid() {
       setTests([]);
       setStudents([]);
       setMarks({});
-      setTotalMarks({});
     }
   }, [selectedClassId]);
 
   const handleSaveRow = async (studentId) => {
-    if (!selectedTestId || !selectedSubject || marks[studentId] === undefined || totalMarks[studentId] === undefined) {
+    if (!selectedTestId || !selectedSubject || marks[studentId] === undefined) {
       setError('Please select a test, subject, and enter marks.');
+      toast.warning('Please select a test, subject, and enter marks.');
       return;
     }
 
     const obtainedMarks = marks[studentId] || 0;
-    const maxMarks = totalMarks[studentId] || 30;
-    if (obtainedMarks > maxMarks) {
+    if (obtainedMarks > totalMarks) {
       setError('Obtained marks cannot exceed total marks.');
+      toast.warning('Obtained marks cannot exceed total marks.');
       return;
     }
 
@@ -92,28 +96,44 @@ function AddMarksStudentGrid() {
         StudentId: studentId,
         TestId: selectedTestId,
         Subject: selectedSubject,
-        TotalMarks: maxMarks,
+        TotalMarks: totalMarks,
         ObtainedMarks: obtainedMarks,
       };
-      await axios.post(`${BASE_URL}/api/test/add-marks`, payload, {
+      const response = await axios.post(`${BASE_URL}/api/test/add-marks-row`, payload, {
         headers: { Authorization: `Bearer ${token}` },
-      });
-      setSuccess('Marks saved for this student!');
-      setError('');
+      });// Optional: check response status or message
+      debugger
+      if (response.status === 200 && response?.data?.message == "Marks not added.") {
+        setSuccess(response?.data?.message + ' ' + response.data.skippedSubjects[0]);
+        setError('');
+        toast.warning(response?.data?.message + ' because marks already added for ' + response.data.skippedSubjects[0]);
+      } else if (response.status === 200 && response?.data?.message == "Marks added.") {
+        setSuccess(response?.data?.message);
+        setError('');
+        toast.success(response?.data?.message);
+      } else {
+        // In case of a logical error returned by the API
+        const message = response.data?.message || 'Error saving marks for this student.';
+        setError(message);
+        toast.error(message);
+      }
     } catch (err) {
       setError('Error saving marks for this student.');
+      toast.error('Error saving marks for this student.');
     }
   };
 
   const handleSaveAll = async () => {
-    if (!selectedTestId || !selectedSubject || Object.values(marks).some(m => m === undefined) || Object.values(totalMarks).some(m => m === undefined)) {
+    if (!selectedTestId || !selectedSubject || Object.values(marks).some(m => m === undefined)) {
       setError('Please select a test, subject, and enter all marks.');
+      toast.warning('Please select a test, subject, and enter all marks.');
       return;
     }
 
-    const invalidEntries = students.filter(student => marks[student.id] > totalMarks[student.id]);
+    const invalidEntries = students.filter(student => marks[student.id] > totalMarks);
     if (invalidEntries.length > 0) {
       setError('Obtained marks cannot exceed total marks for some students.');
+      toast.warning('Obtained marks cannot exceed total marks for some students.');
       return;
     }
 
@@ -123,7 +143,7 @@ function AddMarksStudentGrid() {
         StudentId: student.id,
         TestId: selectedTestId,
         Subject: selectedSubject,
-        TotalMarks: totalMarks[student.id] || 30,
+        TotalMarks: totalMarks,
         ObtainedMarks: marks[student.id] || 0,
       }));
       const response = await axios.post(`${BASE_URL}/api/test/add-marks`, payload, {
@@ -132,12 +152,15 @@ function AddMarksStudentGrid() {
       const skipped = response.data?.skippedSubjects || [];
       if (skipped.length > 0) {
         setSuccess(`Marks saved. Skipped these subjects: ${skipped.join(', ')}`);
+        toast.success(`Marks saved. Skipped these subjects: ${skipped.join(', ')}`);
       } else {
         setSuccess('All marks saved successfully!');
+        toast.success('All marks saved successfully!');
       }
       setError('');
     } catch (err) {
       setError('Error saving all marks.');
+      toast.error('Error saving all marks.');
     }
   };
 
@@ -145,18 +168,8 @@ function AddMarksStudentGrid() {
     setMarks(prev => ({ ...prev, [studentId]: parseInt(value) || 0 }));
   };
 
-  const updateTotalMarks = (studentId, value) => {
-    const newTotal = parseInt(value) || 0;
-    setTotalMarks(prev => ({ ...prev, [studentId]: newTotal }));
-    // Ensure obtained marks don't exceed new total
-    const obtained = marks[studentId] || 0;
-    if (obtained > newTotal) {
-      setMarks(prev => ({ ...prev, [studentId]: newTotal }));
-    }
-  };
-
   // Function to calculate grade based on marks and total marks
-  const calculateGrade = (obtainedMarks, totalMarks) => {
+  const calculateGrade = (obtainedMarks) => {
     const percentage = totalMarks > 0 ? (obtainedMarks / totalMarks * 100) : 0;
     return percentage >= 90 ? "A+" :
            percentage >= 80 ? "A" :
@@ -167,11 +180,20 @@ function AddMarksStudentGrid() {
 
   return (
     <div className="d-flex flex-column min-vh-100 bg-light">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="container py-3">
         <div className="card p-3 p-md-4">
           <h2 className="card-title text-center mb-4">Add Marks for Test</h2>
-          {error && <p className="text-danger text-center mb-3">{error}</p>}
-          {success && <p className="text-success text-center mb-3">{success}</p>}
           <div className="row g-2 mb-3">
             <div className="col-12 col-md-6">
               <label htmlFor="classId" className="form-label">Select Class</label>
@@ -229,6 +251,17 @@ function AddMarksStudentGrid() {
                     ))}
                   </select>
                 </div>
+                <div className="col-12 col-md-6">
+                  <label htmlFor="totalMarks" className="form-label">Total Marks</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="totalMarks"
+                    value={totalMarks}
+                    onChange={(e) => setTotalMarks(parseInt(e.target.value) || 0)}
+                    min="0"
+                  />
+                </div>
               </div>
               <div className="table-responsive mb-3">
                 <table className="table table-striped">
@@ -238,7 +271,6 @@ function AddMarksStudentGrid() {
                       <th>Name</th>
                       <th>Subject</th>
                       <th>Marks Obtained</th>
-                      <th>Total Marks</th>
                       <th>Grade</th>
                       <th>Action</th>
                     </tr>
@@ -246,8 +278,7 @@ function AddMarksStudentGrid() {
                   <tbody>
                     {students.map((student) => {
                       const obtainedMarks = marks[student.id] || 0;
-                      const maxMarks = totalMarks[student.id] || 30;
-                      const grade = calculateGrade(obtainedMarks, maxMarks);
+                      const grade = calculateGrade(obtainedMarks);
                       return (
                         <tr key={student.id}>
                           <td>{student.rollNo}</td>
@@ -260,16 +291,7 @@ function AddMarksStudentGrid() {
                               value={obtainedMarks}
                               onChange={(e) => updateMarks(student.id, e.target.value)}
                               min="0"
-                              max={maxMarks}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              className="form-control"
-                              value={maxMarks}
-                              onChange={(e) => updateTotalMarks(student.id, e.target.value)}
-                              min="0"
+                              max={totalMarks}
                             />
                           </td>
                           <td>{grade}</td> {/* Grade calculated runtime */}
