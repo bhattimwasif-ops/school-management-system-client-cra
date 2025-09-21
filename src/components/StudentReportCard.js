@@ -74,6 +74,8 @@ const ResultCard = () => {
       border: '1px solid #000',
       padding: '8px',
       backgroundColor: '#f0f0f0',
+      textAlign: 'center',
+      verticalAlign: 'middle',
     },
     td: {
       border: '1px solid #000',
@@ -206,7 +208,9 @@ const ResultCard = () => {
     const width = pdf.internal.pageSize.getWidth();
     const height = (canvas.height * width) / canvas.width;
     pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-    pdf.save('result_report.pdf');
+    const sanitizedStudentName = resultData.name.replace(/[^a-zA-Z0-9]/g, '_'); // Remove special chars
+    const sanitizedTestName = selectedTestName.replace(/[^a-zA-Z0-9]/g, '_');
+    pdf.save(`${sanitizedStudentName}_${sanitizedTestName}_result.pdf`);
   };
 
   const handlePrint = () => {

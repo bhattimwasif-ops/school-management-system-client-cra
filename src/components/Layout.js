@@ -24,6 +24,7 @@ import StudentAttendanceDetail from './StudentAttendanceDetail';
 import ResultCard from './ResultCard';
 import StudentReportCard from './StudentReportCard';
 import AddMarksStudentGrid from './AddMarksStudentGrid';
+import ResultGrid from './ResultGrid';
 
 function Layout() {
   const location = useLocation();
@@ -73,6 +74,8 @@ function Layout() {
         { path: '/student-report', label: 'Test Performance Report' },
         { path: '/student-result-card', label: 'Student Result Card' },
         { path: '/add-marks-student-grid', label: 'Add Marks Student Grid' },
+        { path: '/result-grid', label: 'Student Result Grid' },
+
       ],
     },
     { label: 'Logout', isParent: false, onClick: handleLogout },
@@ -218,6 +221,8 @@ const router = createBrowserRouter([
       { path: '/class-attendance-report', element: <ClassAttendanceReport /> },
       { path: '/student-result-card', element: <StudentReportCard /> },
       { path: '/add-marks-student-grid', element: <AddMarksStudentGrid /> },
+      { path: '/result-grid', element: <ResultGrid /> },
+
     ],
   },
 ]);

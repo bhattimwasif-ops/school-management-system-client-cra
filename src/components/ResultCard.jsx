@@ -80,6 +80,7 @@ const ResultCard = ({ selectedStudentId }) => {
         const response = await axios.get(`${BASE_URL}/api/studenttest/${selectedStudentId}/result`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        debugger
         console.log('API Response:', response.data);
         setResultData(response.data);
         setError('');
@@ -145,7 +146,7 @@ const ResultCard = ({ selectedStudentId }) => {
           ))}
           <tr>
             <th style={styles.th} colSpan="5">Total</th>
-            <th style={styles.th}>{resultData.totalStatus || 'PASS'} {resultData.totalMarks || 'N/A'}</th>
+            <th style={styles.th}>{resultData.totalStatus} {resultData.totalMarks || 'N/A'}</th>
           </tr>
         </tbody>
       </table>

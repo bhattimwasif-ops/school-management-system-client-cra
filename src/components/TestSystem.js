@@ -15,7 +15,8 @@ function TestSystem() {
 
   const defaultSubjects = [
     'English', 'Urdu', 'Islamic Studies', 'Pak Studies', 'Physics', 'Chemistry',
-    'Bio', 'Math', 'Tarjama tul Quran', 'General Knowledge', 'Art', 'Dictation', 'Nazra'
+    'Bio', 'Math', 'Tarjama tul Quran', 'General Knowledge', 'Art', 'Dictation', 'Nazra', 'Nazra', 
+    'Ethics', 'Civics'
   ];
 
   useEffect(() => {
