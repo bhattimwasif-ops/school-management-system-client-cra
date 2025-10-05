@@ -1,8 +1,8 @@
 // StudentForm.js
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-
-const BASE_URL = 'http://localhost:32000/api';
+import BASE_URL from './config';
+//const BASE_URL = 'http://localhost:32000/api';
 
 const initialFormData = {
   name: '',
@@ -44,7 +44,7 @@ function StudentForm({ selectedStudent, onSave, onError, onCancel }) {
   // Fetch classes for the dropdown
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/classes`, {
+      .get(`${BASE_URL}/api/classes`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       })
       .then(res => setClasses(res.data))
@@ -89,13 +89,13 @@ function StudentForm({ selectedStudent, onSave, onError, onCancel }) {
       const token = localStorage.getItem('token');
       if (selectedStudent) {
         await axios.put(
-          `${BASE_URL}/students/${selectedStudent.id}`,
+          `${BASE_URL}/api/students/${selectedStudent.id}`,
           payload,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         window.alert('Student updated successfully!');
       } else {
-        await axios.post(`${BASE_URL}/students`, payload, {
+        await axios.post(`${BASE_URL}/api/students`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
         window.alert('Student registered successfully!');

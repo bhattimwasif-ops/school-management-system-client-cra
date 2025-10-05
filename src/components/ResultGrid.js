@@ -60,7 +60,13 @@ function ResultGrid() {
           const res = await axios.get(`${BASE_URL}/api/test/${selectedTestId}/results`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          setResults(res.data);
+          // Sort results by obtainedMarks in descending order
+          const sortedResults = res.data.sort((a, b) => {
+            const aObtained = parseInt(a.totalStatus.split(' ')[1].split('/')[0]) || 0;
+            const bObtained = parseInt(b.totalStatus.split(' ')[1].split('/')[0]) || 0;
+            return bObtained - aObtained;
+          });
+          setResults(sortedResults);
         } catch (err) {
           console.error('Error fetching results:', err);
           toast.error('Error fetching results. Please check the test ID or server.', { position: 'top-right', autoClose: 3000 });

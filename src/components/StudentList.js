@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function StudentList({ students, onEdit, onDelete, pageSize = 10 }) {
+function StudentList({ students, onEdit, onDelete, pageSize = 20 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 debugger
@@ -91,7 +91,7 @@ debugger
             <tr key={s.id}>
               <td>{s.name}</td>
               <td>{s.rollNo}</td>
-              <td>{s.classId}</td>
+              <td>{s.className}</td>
               <td>{s.parentEmail}</td>
               <td>{s.parentPhone}</td>
               <td>

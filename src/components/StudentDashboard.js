@@ -5,7 +5,6 @@ import StudentList from './StudentList';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import toast styles
 import BASE_URL from './config';
-//const BASE_URL = 'http://localhost:32000/api';
 
 function StudentDashboard() {
   const [students, setStudents] = useState([]);
@@ -83,7 +82,7 @@ function StudentDashboard() {
         students={students}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        pageSize={8}
+        pageSize={20}
       />
     </div>
   );
